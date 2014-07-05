@@ -57,5 +57,21 @@
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
   <ItemGroup>
     <Folder Include="Properties" />
+    <Folder Include="Security" />
+    <Folder Include="Security\Users" />
+    <Folder Include="Security\Schemas" />
+    <Folder Include="Schemas" />
+    <Folder Include="Schemas\Core" />
+    <Folder Include="Schemas\Core\Tables" />
+  </ItemGroup>
+  <ItemGroup>
+    <Build Include="Security\ChurchUserLogin.sql" />
+    <Build Include="Security\Users\ChurchUser.sql" />
+    <Build Include="Security\Schemas\Core.sql" />
+    <Build Include="Schemas\Core\Tables\Church.sql" />
+    <Build Include="Schemas\Core\Tables\TimeZone.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Church.SQL.Local.publish.xml" />
   </ItemGroup>
 </Project>
