@@ -63,6 +63,7 @@
     <Folder Include="Schemas" />
     <Folder Include="Schemas\Core" />
     <Folder Include="Schemas\Core\Tables" />
+    <Folder Include="_PostDeployment" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Security\ChurchUserLogin.sql" />
@@ -70,8 +71,14 @@
     <Build Include="Security\Schemas\Core.sql" />
     <Build Include="Schemas\Core\Tables\Church.sql" />
     <Build Include="Schemas\Core\Tables\TimeZone.sql" />
+    <None Include="_PostDeployment\Core.TimeZone.Populate.sql" />
+    <Build Include="Schemas\Core\Tables\Address.sql" />
+    <Build Include="Schemas\Core\Tables\Location.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Church.SQL.Local.publish.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <PostDeploy Include="Script.PostDeployment.sql" />
   </ItemGroup>
 </Project>
