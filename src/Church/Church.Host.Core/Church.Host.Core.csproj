@@ -85,10 +85,19 @@
       <Project>{5ed93ccb-eff1-4d29-be10-433a8431cc27}</Project>
       <Name>Church.Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Church.Components.Core\Church.Components.Core.csproj">
+      <Project>{dc8504ad-f791-4c54-83ca-7727cc1d7e2a}</Project>
+      <Name>Church.Components.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Church.Model\Church.Model.csproj">
       <Project>{3563e57a-a00f-4d0b-8e02-099d3315d954}</Project>
       <Name>Church.Model</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="EntityFramework.SqlServer.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

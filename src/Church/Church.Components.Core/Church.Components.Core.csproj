@@ -52,7 +52,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repository\CoreContext.cs" />
     <Compile Include="Repository\ChurchMappings.cs" />
+    <Compile Include="Repository\CoreRepository.cs" />
     <Compile Include="Repository\ICoreRepository.cs" />
+    <Compile Include="Repository\TimeZoneMappings.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Church.Common\Church.Common.csproj">
@@ -65,7 +67,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

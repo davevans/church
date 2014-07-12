@@ -1,20 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web.Http;
-using Church.Model.Core;
+﻿using System.Web.Http;
+using Church.Components.Core;
 
 namespace Church.Host.Core.Controllers
 {
     public class ChurchController : ApiController
     {
+        private readonly IChurchService _churchService;
+        public ChurchController(IChurchService churchService)
+        {
+            _churchService = churchService;
+        }
+
         [HttpGet]
         [Route("api/church/{id}")]
-        public Church.Model.Core.Church Get(int id)
+        public Model.Core.Church Get(int id)
         {
-            return new Church.Model.Core.Church { Id = 1, Name = "Erko", TimeZone = new Church.Model.Core.TimeZone { Id = 1, Name = "Whatevs" } };
+            return _churchService.GetById(id);
         }
     }
 }

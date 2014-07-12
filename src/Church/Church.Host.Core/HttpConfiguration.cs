@@ -1,14 +1,12 @@
-﻿using Newtonsoft.Json;
+﻿using Church.Components.Core;
+using Church.Components.Core.Repository;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http.Formatting;
 using System.Net.Http.Headers;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web.Http;
 using TinyIoC;
+
 
 namespace Church.Host.Core
 {
@@ -20,12 +18,14 @@ namespace Church.Host.Core
 
             //configure dependency resolution
             var container = new TinyIoCContainer();
-            this.DependencyResolver = new Church.Common.Web.TinyIoCWebApiResolver(container);
+            DependencyResolver = new Common.Web.TinyIoCWebApiResolver(container);
+            RegisterComponents(container);
         }
 
         void RegisterComponents(TinyIoCContainer container)
         {
-            //container.Register<
+            container.Register<ICoreRepository, CoreRepository>().AsSingleton();
+            container.Register<IChurchService, ChurchService>().AsSingleton();
         }
 
 

@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TinyIoC;
 
 namespace Church.Common.Web
 {
     public class TinyIoCWebApiResolver : System.Web.Http.Dependencies.IDependencyResolver
     {
-        private TinyIoCContainer _container;
+        private readonly TinyIoCContainer _container;
 
         public TinyIoCWebApiResolver(TinyIoCContainer container)
         {
