@@ -1,6 +1,6 @@
 ﻿using System.Data.Entity.ModelConfiguration;
 
-namespace Church.Components.Core.Repository
+namespace Church.Components.Core.Repository.ModelMappings
 {
     public class ChurchMappings : EntityTypeConfiguration<Model.Core.Church>
     {

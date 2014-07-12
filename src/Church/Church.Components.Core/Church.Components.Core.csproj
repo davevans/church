@@ -51,10 +51,10 @@
     <Compile Include="IChurchService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repository\CoreContext.cs" />
-    <Compile Include="Repository\ChurchMappings.cs" />
+    <Compile Include="Repository\ModelMappings\ChurchMappings.cs" />
     <Compile Include="Repository\CoreRepository.cs" />
     <Compile Include="Repository\ICoreRepository.cs" />
-    <Compile Include="Repository\TimeZoneMappings.cs" />
+    <Compile Include="Repository\ModelMappings\TimeZoneMappings.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Church.Common\Church.Common.csproj">

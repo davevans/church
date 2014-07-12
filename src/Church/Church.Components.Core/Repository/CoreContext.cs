@@ -1,5 +1,6 @@
 ﻿using Church.Common.Database;
 using System.Data.Entity;
+using Church.Components.Core.Repository.ModelMappings;
 using ModelCore = Church.Model.Core;
 
 namespace Church.Components.Core.Repository
