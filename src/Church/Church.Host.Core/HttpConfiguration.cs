@@ -8,25 +8,26 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
+using TinyIoC;
 
 namespace Church.Host.Core
 {
     public class HttpConfiguration : System.Web.Http.HttpConfiguration
     {
         public HttpConfiguration()
-        {
-            ConfigureRoutes();
+        {            
             ConfigureJsonSerialization();
+
+            //configure dependency resolution
+            var container = new TinyIoCContainer();
+            this.DependencyResolver = new Church.Common.Web.TinyIoCWebApiResolver(container);
         }
 
-        void ConfigureRoutes()
+        void RegisterComponents(TinyIoCContainer container)
         {
-            Routes.MapHttpRoute(
-                name: "DefaultApi",
-                routeTemplate: "api/{controller}/{id}",
-                defaults: new { id = RouteParameter.Optional }
-            );
+            //container.Register<
         }
+
 
         void ConfigureJsonSerialization()
         {

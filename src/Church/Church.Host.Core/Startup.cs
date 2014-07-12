@@ -13,6 +13,8 @@ namespace Church.Host.Core
         public void Configuration(IAppBuilder appBuilder)
         {
             var httpConfig = new Church.Host.Core.HttpConfiguration();
+            httpConfig.MapHttpAttributeRoutes();
+            
             appBuilder.UseWebApi(httpConfig);
         }
     }

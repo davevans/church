@@ -11,6 +11,7 @@ namespace Church.Host.Core.Controllers
     public class ChurchController : ApiController
     {
         [HttpGet]
+        [Route("api/church/{id}")]
         public Church.Model.Core.Church Get(int id)
         {
             return new Church.Model.Core.Church { Id = 1, Name = "Erko", TimeZone = new Church.Model.Core.TimeZone { Id = 1, Name = "Whatevs" } };
