@@ -16,8 +16,7 @@ namespace Church.Components.Core.Repository
             return _dbContext.Churches
                 .Include(x => x.Locations.Select(a => a.Address))
                 .Include(x => x.TimeZone)
-                .FirstOrDefault();
-            
+                .FirstOrDefault(x => x.Id == churchId);
         }
     }
 }
