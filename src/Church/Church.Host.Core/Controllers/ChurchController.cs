@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
+using System.Net;
 using System.Web.Http;
 using Church.Common.Mapping;
 using Church.Components.Core;
@@ -20,6 +20,10 @@ namespace Church.Host.Core.Controllers
         public ChurchViewModel ChurchById(int id)
         {
             var church = _churchService.GetById(id);
+            if (church == null)
+            {
+                throw new HttpResponseException(HttpStatusCode.NotFound);
+            }
             return Mapper.Map<Model.Core.Church, ChurchViewModel>(church);
         }
 
@@ -28,24 +32,11 @@ namespace Church.Host.Core.Controllers
         public IEnumerable<LocationViewModel> ChurchLocationsByChurchId(int churchId)
         {
             var church = _churchService.GetById(churchId);
+            if (church == null)
+            {
+                throw new HttpResponseException(HttpStatusCode.NotFound);
+            }
             return Mapper.MapList<Model.Core.Location, LocationViewModel>(church.Locations);
-
-            //var locationViewModels = church.Locations.Select(x => new LocationViewModel
-            //{
-            //    Id = x.Id,
-            //    Name = x.Name,
-            //    Address = new AddressViewModel
-            //    {
-            //        Street1 = x.Address.Street1,
-            //        Street2 = x.Address.Street2,
-            //        City = x.Address.City,
-            //        PostCode = x.Address.PostCode,
-            //        Country = x.Address.Country,
-            //        State = x.Address.State,
-            //        Id = x.Address.Id
-            //    }
-            //});
-            //return locationViewModels;
         }
     }
 }

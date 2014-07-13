@@ -11,17 +11,17 @@ namespace Church.Host.Core
     {
         public void Configuration(IAppBuilder appBuilder)
         {
+
             var container = new TinyIoCContainer();
 
             var httpConfig = new HttpConfiguration();
-            httpConfig.MapHttpAttributeRoutes();
-            httpConfig.SetDependencyResolver(container);
+            appBuilder.UseWebApi(httpConfig);
 
             RegisterComponents(container);
             RegisterMappings();
 
-
-            appBuilder.UseWebApi(httpConfig);
+            httpConfig.MapHttpAttributeRoutes();
+            httpConfig.SetDependencyResolver(container);
         }
 
         void RegisterComponents(TinyIoCContainer container)
