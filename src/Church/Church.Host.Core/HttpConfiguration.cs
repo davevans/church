@@ -1,6 +1,4 @@
-﻿using Church.Components.Core;
-using Church.Components.Core.Repository;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System;
 using System.Net.Http.Formatting;
@@ -15,19 +13,12 @@ namespace Church.Host.Core
         public HttpConfiguration()
         {            
             ConfigureJsonSerialization();
-
-            //configure dependency resolution
-            var container = new TinyIoCContainer();
-            DependencyResolver = new Common.Web.TinyIoCWebApiResolver(container);
-            RegisterComponents(container);
         }
 
-        void RegisterComponents(TinyIoCContainer container)
+        public void SetDependencyResolver(TinyIoCContainer tinyIoCContainer)
         {
-            container.Register<ICoreRepository, CoreRepository>().AsSingleton();
-            container.Register<IChurchService, ChurchService>().AsSingleton();
+            DependencyResolver = new Common.Web.TinyIoCWebApiResolver(tinyIoCContainer);
         }
-
 
         void ConfigureJsonSerialization()
         {
@@ -39,9 +30,9 @@ namespace Church.Host.Core
     {
         public BrowserJsonFormatter()
         {
-            this.SupportedMediaTypes.Add(new MediaTypeHeaderValue("text/html"));
-            this.SerializerSettings.Formatting = Formatting.Indented;
-            this.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+            SupportedMediaTypes.Add(new MediaTypeHeaderValue("text/html"));
+            SerializerSettings.Formatting = Formatting.Indented;
+            SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
         }
 
         public override void SetDefaultContentHeaders(Type type, HttpContentHeaders headers, MediaTypeHeaderValue mediaType)
