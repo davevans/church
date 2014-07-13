@@ -74,6 +74,8 @@
     <None Include="_PostDeployment\Core.TimeZone.Populate.sql" />
     <Build Include="Schemas\Core\Tables\Address.sql" />
     <Build Include="Schemas\Core\Tables\Location.sql" />
+    <None Include="_PostDeployment\Core.Address.Populate.sql" />
+    <None Include="_PostDeployment\Core.Location.Populate.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Church.SQL.Local.publish.xml" />

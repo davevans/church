@@ -51,9 +51,11 @@
     <Compile Include="IChurchService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repository\CoreContext.cs" />
+    <Compile Include="Repository\ModelMappings\AddressMappings.cs" />
     <Compile Include="Repository\ModelMappings\ChurchMappings.cs" />
     <Compile Include="Repository\CoreRepository.cs" />
     <Compile Include="Repository\ICoreRepository.cs" />
+    <Compile Include="Repository\ModelMappings\LocationMappings.cs" />
     <Compile Include="Repository\ModelMappings\TimeZoneMappings.cs" />
   </ItemGroup>
   <ItemGroup>

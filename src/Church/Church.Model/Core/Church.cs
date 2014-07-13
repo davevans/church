@@ -1,4 +1,6 @@
-﻿namespace Church.Model.Core
+﻿using System.Collections.Generic;
+
+namespace Church.Model.Core
 {
     public class Church
     {
@@ -7,5 +9,12 @@
 
         public int TimeZoneId { get; set; }
         public virtual TimeZone TimeZone { get; set; }
+
+        public ICollection<Location> Locations { get; set; }
+
+        public Church()
+        {
+            Locations = new List<Location>();
+        }
     }
 }

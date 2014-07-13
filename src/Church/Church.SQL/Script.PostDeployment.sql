@@ -12,3 +12,5 @@ Post-Deployment Script Template
 
 :r .\_PostDeployment\Core.TimeZone.Populate.sql
 :r .\_PostDeployment\Core.Church.Populate.sql
+:r .\_PostDeployment\Core.Address.Populate.sql
+:r .\_PostDeployment\Core.Location.Populate.sql

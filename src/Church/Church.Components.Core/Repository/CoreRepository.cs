@@ -1,4 +1,7 @@
-﻿namespace Church.Components.Core.Repository
+﻿using System.Linq;
+using System.Data.Entity;
+
+namespace Church.Components.Core.Repository
 {
     public class CoreRepository : ICoreRepository
     {
@@ -10,8 +13,11 @@
 
         public Model.Core.Church GetById(int churchId)
         {
-            var church = _dbContext.Chuches.Find(churchId);
-            return church;
+            return _dbContext.Churches
+                .Include(x => x.Locations.Select(a => a.Address))
+                .Include(x => x.TimeZone)
+                .FirstOrDefault();
+            
         }
     }
 }

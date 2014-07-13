@@ -2,5 +2,5 @@
 BEGIN
 	INSERT INTO [Core].Church (Name, TimeZoneId)
 	VALUES
-	('Erko', 85)
+	('NEAC', 85)
 END
