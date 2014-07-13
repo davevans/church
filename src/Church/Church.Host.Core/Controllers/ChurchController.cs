@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Net;
+using System.Net.Http;
 using System.Web.Http;
+using Church.Common.Extensions;
 using Church.Common.Mapping;
 using Church.Components.Core;
 using Church.Host.Core.ViewModels;
@@ -16,15 +18,13 @@ namespace Church.Host.Core.Controllers
         }
 
         [HttpGet]
-        [Route("api/church/{id}")]
-        public ChurchViewModel ChurchById(int id)
+        [Route("api/church/{churchId}")]
+        public HttpResponseMessage ChurchById(int churchId)
         {
-            var church = _churchService.GetById(id);
-            if (church == null)
-            {
-                throw new HttpResponseException(HttpStatusCode.NotFound);
-            }
-            return Mapper.Map<Model.Core.Church, ChurchViewModel>(church);
+            var church = _churchService.GetById(churchId);
+            return church == null ?
+                Request.CreateErrorResponse(HttpStatusCode.NotFound, "Church {0} not found.".FormatWith(churchId))
+                : Request.CreateResponse(HttpStatusCode.OK, Mapper.Map<Model.Core.Church, ChurchViewModel>(church));
         }
 
         [HttpGet]
