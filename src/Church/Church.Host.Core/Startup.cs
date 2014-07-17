@@ -9,19 +9,20 @@ namespace Church.Host.Core
 {
     public class Startup
     {
+        public static  HttpConfiguration HttpConfiguration;
         public void Configuration(IAppBuilder appBuilder)
         {
 
             var container = new TinyIoCContainer();
 
-            var httpConfig = new HttpConfiguration();
-            appBuilder.UseWebApi(httpConfig);
+            HttpConfiguration = new HttpConfiguration();
+            appBuilder.UseWebApi(HttpConfiguration);
 
             RegisterComponents(container);
             RegisterMappings();
 
-            httpConfig.MapHttpAttributeRoutes();
-            httpConfig.SetDependencyResolver(container);
+            HttpConfiguration.MapHttpAttributeRoutes();
+            HttpConfiguration.SetDependencyResolver(container);
         }
 
         void RegisterComponents(TinyIoCContainer container)
