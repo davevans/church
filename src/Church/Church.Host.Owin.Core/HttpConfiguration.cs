@@ -1,12 +1,11 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
-using System;
+﻿using System;
 using System.Net.Http.Formatting;
 using System.Net.Http.Headers;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using TinyIoC;
 
-
-namespace Church.Host.Core
+namespace Church.Host.Owin.Core
 {
     public class HttpConfiguration : System.Web.Http.HttpConfiguration
     {

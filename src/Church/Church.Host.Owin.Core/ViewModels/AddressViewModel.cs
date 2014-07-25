@@ -1,4 +1,4 @@
-﻿namespace Church.Host.Core.ViewModels
+﻿namespace Church.Host.Owin.Core.ViewModels
 {
     public class AddressViewModel
     {

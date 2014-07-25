@@ -5,9 +5,9 @@ using System.Web.Http;
 using Church.Common.Extensions;
 using Church.Common.Mapping;
 using Church.Components.Core;
-using Church.Host.Core.ViewModels;
+using Church.Host.Owin.Core.ViewModels;
 
-namespace Church.Host.Core.Controllers
+namespace Church.Host.Owin.Core.Controllers
 {
     public class ChurchController : ApiController
     {
@@ -26,6 +26,20 @@ namespace Church.Host.Core.Controllers
                 Request.CreateErrorResponse(HttpStatusCode.NotFound, "Church {0} not found.".FormatWith(churchId))
                 : Request.CreateResponse(HttpStatusCode.OK, Mapper.Map<Model.Core.Church, ChurchViewModel>(church));
         }
+
+        [HttpPost]
+        [Route("api/church")]
+        public HttpResponseMessage AddChurch([FromBody]ChurchViewModel churchViewModel)
+        {
+            //todo: validate churchViewModel
+
+            var church = Mapper.Map<ChurchViewModel, Model.Core.Church>(churchViewModel);
+            _churchService.Add(church);
+
+            var responseViewModel = Mapper.Map<Model.Core.Church, ChurchViewModel>(church);
+            return Request.CreateResponse(HttpStatusCode.Created, responseViewModel);
+        }
+
 
         [HttpGet]
         [Route("api/church/{churchId}/locations")]

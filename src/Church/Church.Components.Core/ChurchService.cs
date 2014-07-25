@@ -12,5 +12,10 @@
         {
             return _coreRepository.GetById(churchId);
         }
+
+        public void Add(Model.Core.Church church)
+        {
+            _coreRepository.Add(church);
+        }
     }
 }

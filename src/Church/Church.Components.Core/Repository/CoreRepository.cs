@@ -18,5 +18,11 @@ namespace Church.Components.Core.Repository
                 .Include(x => x.TimeZone)
                 .FirstOrDefault(x => x.Id == churchId);
         }
+
+        public void Add(Model.Core.Church church)
+        {
+            _dbContext.Churches.Add(church);
+            _dbContext.SaveChanges();
+        }
     }
 }

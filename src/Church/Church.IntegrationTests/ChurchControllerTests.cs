@@ -1,6 +1,9 @@
 ﻿using System.Net;
+using System.Net.Http;
 using Church.Components.Core;
-using Church.Host.Core;
+using Church.Host.Owin.Core;
+using Church.Host.Owin.Core.ViewModels;
+using Church.Model.Core;
 using Microsoft.Owin.Testing;
 using Newtonsoft.Json;
 using NUnit.Framework;
@@ -72,6 +75,39 @@ namespace Church.IntegrationTests
 
             //ASSERT
             Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode, "Expected 404.");
+        }
+
+        [Test]
+        public void AddChurch_Returns201WhenChurchSucesfullyCreated()
+        {
+            //ARRANGE
+            var churchToAdd = new ChurchViewModel
+            {
+                Name = "NewChurch",
+                TimeZone = new TimeZone
+                {
+                    Id = 20,
+                    Name = "Sydney"
+                }
+            };
+
+            const int newChurchId = 10;
+            var mockChurchService = MockRepository.GenerateMock<IChurchService>();
+            mockChurchService.Stub(x => x.Add(Arg<Model.Core.Church>.Is.Anything))
+                             .WhenCalled(c => ((Model.Core.Church) c.Arguments[0]).Id = newChurchId);
+
+            //ACT
+            var requestBody = JsonConvert.SerializeObject(churchToAdd);
+            var response = _server.HttpClient.PostAsJsonAsync("/api/church", new StringContent(requestBody)).Result;
+            var responseJson = response.Content.ReadAsStringAsync().Result;
+
+            //ASSERT
+            Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
+
+            var actualChurchViewModel = JsonConvert.DeserializeObject<ChurchViewModel>(responseJson);
+            Assert.IsNotNull(actualChurchViewModel, "Expected not null");
+            Assert.AreEqual(actualChurchViewModel.Name, churchToAdd.Name);
+            Assert.AreEqual(actualChurchViewModel.Id, newChurchId, "Expected an Id on church repsonse of " + newChurchId);
         }
     }
 
