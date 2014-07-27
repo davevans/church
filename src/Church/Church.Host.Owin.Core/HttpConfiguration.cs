@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net.Http.Formatting;
 using System.Net.Http.Headers;
+using System.Web.Http;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using TinyIoC;
@@ -12,6 +13,7 @@ namespace Church.Host.Owin.Core
         public HttpConfiguration()
         {            
             ConfigureJsonSerialization();
+            IncludeErrorDetailPolicy = IncludeErrorDetailPolicy.LocalOnly;
         }
 
         public void SetDependencyResolver(TinyIoCContainer tinyIoCContainer)

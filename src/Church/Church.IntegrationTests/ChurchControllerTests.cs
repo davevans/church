@@ -1,114 +1,132 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Net.Http;
+using System.Web.Http.ModelBinding;
 using Church.Components.Core;
 using Church.Host.Owin.Core;
 using Church.Host.Owin.Core.ViewModels;
-using Church.Model.Core;
 using Microsoft.Owin.Testing;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using Rhino.Mocks;
 using TinyIoC;
+using TimeZone = Church.Model.Core.TimeZone;
 
 namespace Church.IntegrationTests
 {
-    [TestFixture]
+    
     public class ChurchControllerTests
     {
-        private TestServer _server;
-        private TinyIoCContainer _container;
+        protected TestServer Server;
+        protected TinyIoCContainer Container;
 
         [TestFixtureSetUp]
         public void FixtureInit()
         {
-            _server = TestServer.Create<Startup>();
-            _container = new TinyIoCContainer();
+            Server = TestServer.Create<Startup>();
+            Container = new TinyIoCContainer();
 
-            Startup.HttpConfiguration.SetDependencyResolver(_container);
+            Startup.HttpConfiguration.SetDependencyResolver(Container);
         }
 
         [TestFixtureTearDown]
         public void FixtureDispose()
         {
-            _server.Dispose();
+            Server.Dispose();
         }
 
-        [Test]
-        public void GetChurchById_ReturnsChurchWithMatchingIdAndName()
+        [TestFixture]
+        public class GetChurchByIdTests : ChurchControllerTests
         {
-            //ARANGE
-            const int churchId = 1;
-            const string fakeName = "FakeChurch";
-
-            var mockChurchService = MockRepository.GenerateMock<IChurchService>();
-            mockChurchService.Expect(x => x.GetById(churchId)).Return(new Model.Core.Church
+            [Test]
+            public void ReturnsChurchWithMatchingIdAndName()
             {
-                Id = churchId,
-                Name = fakeName
-            });
+                //ARANGE
+                const int churchId = 1;
+                const string fakeName = "FakeChurch";
 
-            _container.Register(typeof (IChurchService), mockChurchService);
-
-
-            //ACT
-            var response = _server.HttpClient.GetAsync("/api/church/" + churchId).Result;
-            var json = response.Content.ReadAsStringAsync().Result;
-
-            //ASSERT
-            var actual = JsonConvert.DeserializeObject<Model.Core.Church>(json);
-            Assert.AreEqual(churchId, actual.Id);
-            Assert.AreEqual(fakeName, actual.Name);
-        }
-
-        [Test]
-        public void GetChurchById_Returns404ForUnknownChurchId()
-        {
-            //ARANGE
-            const int churchId = 1;
-
-            var mockChurchService = MockRepository.GenerateMock<IChurchService>();
-            mockChurchService.Expect(x => x.GetById(churchId)).Return(null);
-            _container.Register(typeof(IChurchService), mockChurchService);
-
-            //ACT
-            var response = _server.HttpClient.GetAsync("/api/church/" + churchId).Result;
-
-            //ASSERT
-            Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode, "Expected 404.");
-        }
-
-        [Test]
-        public void AddChurch_Returns201WhenChurchSucesfullyCreated()
-        {
-            //ARRANGE
-            var churchToAdd = new ChurchViewModel
-            {
-                Name = "NewChurch",
-                TimeZone = new TimeZone
+                var mockChurchService = MockRepository.GenerateMock<IChurchService>();
+                mockChurchService.Expect(x => x.GetById(churchId)).Return(new Model.Core.Church
                 {
-                    Id = 20,
-                    Name = "Sydney"
-                }
-            };
+                    Id = churchId,
+                    Name = fakeName
+                });
 
-            const int newChurchId = 10;
-            var mockChurchService = MockRepository.GenerateMock<IChurchService>();
-            mockChurchService.Stub(x => x.Add(Arg<Model.Core.Church>.Is.Anything))
-                             .WhenCalled(c => ((Model.Core.Church) c.Arguments[0]).Id = newChurchId);
+                Container.Register(typeof(IChurchService), mockChurchService);
 
-            //ACT
-            var requestBody = JsonConvert.SerializeObject(churchToAdd);
-            var response = _server.HttpClient.PostAsJsonAsync("/api/church", new StringContent(requestBody)).Result;
-            var responseJson = response.Content.ReadAsStringAsync().Result;
 
-            //ASSERT
-            Assert.AreEqual(HttpStatusCode.Created, response.StatusCode);
+                //ACT
+                var response = Server.HttpClient.GetAsync("/api/church/" + churchId).Result;
+                var json = response.Content.ReadAsStringAsync().Result;
 
-            var actualChurchViewModel = JsonConvert.DeserializeObject<ChurchViewModel>(responseJson);
-            Assert.IsNotNull(actualChurchViewModel, "Expected not null");
-            Assert.AreEqual(actualChurchViewModel.Name, churchToAdd.Name);
-            Assert.AreEqual(actualChurchViewModel.Id, newChurchId, "Expected an Id on church repsonse of " + newChurchId);
+                //ASSERT
+                var actual = JsonConvert.DeserializeObject<Model.Core.Church>(json);
+                Assert.AreEqual(churchId, actual.Id);
+                Assert.AreEqual(fakeName, actual.Name);
+            }
+
+            [Test]
+            public void Returns404ForUnknownChurchId()
+            {
+                //ARANGE
+                const int churchId = 1;
+
+                var mockChurchService = MockRepository.GenerateMock<IChurchService>();
+                mockChurchService.Expect(x => x.GetById(churchId)).Return(null);
+                Container.Register(typeof(IChurchService), mockChurchService);
+
+                //ACT
+                var response = Server.HttpClient.GetAsync("/api/church/" + churchId).Result;
+
+                //ASSERT
+                Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode, "Expected 404.");
+            }
         }
+
+        [TestFixture]
+        public class AddChurchTests : ChurchControllerTests
+        {
+            [Test]
+            public void ReturnsCreatedHttpStatusCode()
+            {
+                //arrange
+                var churchViewModel = new ChurchViewModel
+                {
+                    Name = "Foo",
+                    TimeZone = new TimeZone
+                    {
+                        Id = 20,
+                        Name = "Sydney"
+                    }
+                };
+
+                var mockChurchService = MockRepository.GenerateStub<IChurchService>();
+                mockChurchService.Stub(x => x.Add(Arg<Model.Core.Church>.Is.Anything))
+                                 .Callback((Model.Core.Church c) =>
+                                 {
+                                    c.Id = 101;
+                                    return true;
+                                 });
+                    
+
+                Container.Register(typeof (IChurchService), mockChurchService);
+
+                //ACT
+                var response = Server.HttpClient.PostAsJsonAsync("/api/church", churchViewModel).Result;
+
+                //ASSERT
+                Assert.AreEqual(HttpStatusCode.Created, response.StatusCode, "Expected HttpStatusCode of CREATED");
+
+            }
+
+        }
+
+
+
+
+
+
+
     }
 
     

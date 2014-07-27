@@ -3,9 +3,11 @@ using Church.Common.Mapping;
 using Church.Components.Core;
 using Church.Components.Core.Repository;
 using Church.Host.Owin.Core.ViewModels;
+using Microsoft.Owin;
 using Owin;
 using TinyIoC;
 
+[assembly: OwinStartup(typeof(Church.Host.Owin.Core.Startup))]
 namespace Church.Host.Owin.Core
 {
     public class Startup
