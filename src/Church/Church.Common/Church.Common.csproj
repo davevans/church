@@ -59,6 +59,9 @@
     <Compile Include="IOC\TinyIoC.cs" />
     <Compile Include="Mapping\Mapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Validation\ValidateChildAttribute.cs" />
+    <Compile Include="Validation\ValidationResults.cs" />
+    <Compile Include="Validation\Validator.cs" />
     <Compile Include="Web\TinyIocWebApiResolver.cs" />
   </ItemGroup>
   <ItemGroup>
