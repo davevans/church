@@ -1,7 +1,5 @@
-﻿using System;
-using System.Net;
+﻿using System.Net;
 using System.Net.Http;
-using System.Web.Http.ModelBinding;
 using Church.Components.Core;
 using Church.Host.Owin.Core;
 using Church.Host.Owin.Core.ViewModels;
@@ -10,7 +8,6 @@ using Newtonsoft.Json;
 using NUnit.Framework;
 using Rhino.Mocks;
 using TinyIoC;
-using TimeZone = Church.Model.Core.TimeZone;
 
 namespace Church.IntegrationTests
 {
@@ -100,8 +97,8 @@ namespace Church.IntegrationTests
                     }
                 };
 
-                var mockChurchService = MockRepository.GenerateStub<IChurchService>();
-                mockChurchService.Stub(x => x.Add(Arg<Model.Core.Church>.Is.Anything));
+                var mockChurchService = MockRepository.GenerateMock<IChurchService>();
+                mockChurchService.Expect(x => x.Add(Arg<Model.Core.Church>.Matches(c => c.Name == "Foo")));
                 Container.Register(typeof (IChurchService), mockChurchService);
 
                 //ACT
@@ -109,6 +106,7 @@ namespace Church.IntegrationTests
 
                 //ASSERT
                 Assert.AreEqual(HttpStatusCode.Created, response.StatusCode, "Expected HttpStatusCode of CREATED");
+                mockChurchService.VerifyAllExpectations();
             }
 
             [Test]
@@ -142,6 +140,36 @@ namespace Church.IntegrationTests
 
                 //ASSERT
                 Assert.AreEqual(101, newChurch.Id, "expected id 101");
+            }
+
+            [Test]
+            public void ReturnsChurchWithSameNameAndTimeZoneAsRequest()
+            {
+                //arrange
+                var churchViewModel = new ChurchViewModel
+                {
+                    Name = "St Dav",
+                    TimeZone = new TimeZoneViewModel
+                    {
+                        Id = 20,
+                        Name = "Sydney"
+                    }
+                };
+
+                var mockChurchService = MockRepository.GenerateStub<IChurchService>();
+                mockChurchService.Stub(x => x.Add(Arg<Model.Core.Church>.Is.Anything)).Callback((Model.Core.Church c) =>{ c.Id = 101; return true; });
+                Container.Register(typeof(IChurchService), mockChurchService);
+
+                //ACT
+                var response = Server.HttpClient.PostAsJsonAsync("/api/church", churchViewModel).Result;
+                var newChurch = JsonConvert.DeserializeObject<ChurchViewModel>(response.Content.ReadAsStringAsync().Result);
+
+                //ASSERT
+                Assert.AreEqual(101, newChurch.Id, "expected id 101");
+                Assert.AreEqual("St Dav", newChurch.Name);
+                Assert.AreEqual(20, newChurch.TimeZone.Id);
+                Assert.AreEqual("Sydney", newChurch.TimeZone.Name);
+
             }
 
             [Test]
