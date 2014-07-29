@@ -31,7 +31,10 @@ namespace Church.Host.Owin.Core.Controllers
         [Route("api/church")]
         public HttpResponseMessage AddChurch([FromBody]ChurchViewModel churchViewModel)
         {
-            //todo: validate churchViewModel
+            if (!ModelState.IsValid)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, @"Invalid Church");
+            }
 
             var church = Mapper.Map<ChurchViewModel, Model.Core.Church>(churchViewModel);
             _churchService.Add(church);

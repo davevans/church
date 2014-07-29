@@ -93,7 +93,32 @@ namespace Church.IntegrationTests
                 var churchViewModel = new ChurchViewModel
                 {
                     Name = "Foo",
-                    TimeZone = new TimeZone
+                    TimeZone = new TimeZoneViewModel
+                    {
+                        Id = 20,
+                        Name = "Sydney"
+                    }
+                };
+
+                var mockChurchService = MockRepository.GenerateStub<IChurchService>();
+                mockChurchService.Stub(x => x.Add(Arg<Model.Core.Church>.Is.Anything));
+                Container.Register(typeof (IChurchService), mockChurchService);
+
+                //ACT
+                var response = Server.HttpClient.PostAsJsonAsync("/api/church", churchViewModel).Result;
+
+                //ASSERT
+                Assert.AreEqual(HttpStatusCode.Created, response.StatusCode, "Expected HttpStatusCode of CREATED");
+            }
+
+            [Test]
+            public void ReturnsChurchWithId()
+            {
+                //arrange
+                var churchViewModel = new ChurchViewModel
+                {
+                    Name = "Foo",
+                    TimeZone = new TimeZoneViewModel
                     {
                         Id = 20,
                         Name = "Sydney"
@@ -104,19 +129,62 @@ namespace Church.IntegrationTests
                 mockChurchService.Stub(x => x.Add(Arg<Model.Core.Church>.Is.Anything))
                                  .Callback((Model.Core.Church c) =>
                                  {
-                                    c.Id = 101;
-                                    return true;
+                                     c.Id = 101;
+                                     return true;
                                  });
-                    
 
-                Container.Register(typeof (IChurchService), mockChurchService);
+
+                Container.Register(typeof(IChurchService), mockChurchService);
+
+                //ACT
+                var response = Server.HttpClient.PostAsJsonAsync("/api/church", churchViewModel).Result;
+                var newChurch = JsonConvert.DeserializeObject<ChurchViewModel>(response.Content.ReadAsStringAsync().Result);
+
+                //ASSERT
+                Assert.AreEqual(101, newChurch.Id, "expected id 101");
+            }
+
+            [Test]
+            public void ReturnsBadRequestForChurchWithNoName()
+            {
+                //arrange
+                var churchViewModel = new ChurchViewModel
+                {
+                    Name = null,
+                    TimeZone = new TimeZoneViewModel
+                    {
+                        Id = 20,
+                        Name = "Sydney"
+                    }
+                };
+
+                var mockChurchService = MockRepository.GenerateStub<IChurchService>();
+                Container.Register(typeof(IChurchService), mockChurchService);
 
                 //ACT
                 var response = Server.HttpClient.PostAsJsonAsync("/api/church", churchViewModel).Result;
 
                 //ASSERT
-                Assert.AreEqual(HttpStatusCode.Created, response.StatusCode, "Expected HttpStatusCode of CREATED");
+                Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode, "Expected HttpStatusCode of BadRequest");
+            }
 
+            [Test]
+            public void ReturnsBadRequestForChurchWithNoTimeZone()
+            {
+                //arrange
+                var churchViewModel = new ChurchViewModel
+                {
+                    Name = "MyChurch",
+                };
+
+                var mockChurchService = MockRepository.GenerateStub<IChurchService>();
+                Container.Register(typeof(IChurchService), mockChurchService);
+
+                //ACT
+                var response = Server.HttpClient.PostAsJsonAsync("/api/church", churchViewModel).Result;
+
+                //ASSERT
+                Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode, "Expected HttpStatusCode of BadRequest");
             }
 
         }

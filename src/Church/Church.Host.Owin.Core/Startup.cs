@@ -36,6 +36,9 @@ namespace Church.Host.Owin.Core
 
         private void RegisterMappings()
         {
+            Mapper.CreateMap<Model.Core.TimeZone, TimeZoneViewModel>();
+            Mapper.CreateMap<TimeZoneViewModel, Model.Core.TimeZone>();
+
             Mapper.CreateMap<Model.Core.Church, ChurchViewModel>()
                 .ForMember(x => x.Id, o => o.MapFrom(d => d.Id))
                 .ForMember(x => x.Name, o => o.MapFrom(d => d.Name))

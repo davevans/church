@@ -1,9 +1,15 @@
-﻿namespace Church.Host.Owin.Core.ViewModels
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Church.Host.Owin.Core.ViewModels
 {
     public class ChurchViewModel
     {
         public int Id { get; set; }
+
+        [Required(AllowEmptyStrings = false, ErrorMessage = "Name is required.")]
         public string Name { get; set; }
-        public Model.Core.TimeZone TimeZone { get; set; }
+
+        [Required(ErrorMessage = "TimeZone is requried.")]
+        public TimeZoneViewModel TimeZone { get; set; }
     }
 }

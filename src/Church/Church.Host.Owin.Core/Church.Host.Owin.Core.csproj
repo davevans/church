@@ -109,6 +109,7 @@
     <Compile Include="ViewModels\AddressViewModel.cs" />
     <Compile Include="ViewModels\ChurchViewModel.cs" />
     <Compile Include="ViewModels\LocationViewModel.cs" />
+    <Compile Include="ViewModels\TimeZoneViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Church.Common\Church.Common.csproj">
