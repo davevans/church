@@ -2,7 +2,7 @@
 {
     public interface IChurchService
     {
-        Model.Core.Church GetById(int churchId);
-        void Add(Model.Core.Church church);
+        Model.Church GetById(int churchId);
+        void Add(Model.Church church);
     }
 }

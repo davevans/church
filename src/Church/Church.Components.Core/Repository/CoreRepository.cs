@@ -11,7 +11,7 @@ namespace Church.Components.Core.Repository
             _dbContext = new CoreContext();
         }
 
-        public Model.Core.Church GetById(int churchId)
+        public Model.Church GetById(int churchId)
         {
             return _dbContext.Churches
                 .Include(x => x.Locations.Select(a => a.Address))
@@ -19,7 +19,7 @@ namespace Church.Components.Core.Repository
                 .FirstOrDefault(x => x.Id == churchId);
         }
 
-        public void Add(Model.Core.Church church)
+        public void Add(Model.Church church)
         {
             _dbContext.Churches.Add(church);
             _dbContext.SaveChanges();

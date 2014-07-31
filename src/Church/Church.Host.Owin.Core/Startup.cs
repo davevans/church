@@ -36,22 +36,22 @@ namespace Church.Host.Owin.Core
 
         private void RegisterMappings()
         {
-            Mapper.CreateMap<Model.Core.TimeZone, TimeZoneViewModel>();
-            Mapper.CreateMap<TimeZoneViewModel, Model.Core.TimeZone>();
+            Mapper.CreateMap<Components.Core.Model.TimeZone, TimeZoneViewModel>();
+            Mapper.CreateMap<TimeZoneViewModel, Components.Core.Model.TimeZone>();
 
-            Mapper.CreateMap<Model.Core.Church, ChurchViewModel>()
+            Mapper.CreateMap<Components.Core.Model.Church, ChurchViewModel>()
                 .ForMember(x => x.Id, o => o.MapFrom(d => d.Id))
                 .ForMember(x => x.Name, o => o.MapFrom(d => d.Name))
                 .ForMember(x => x.TimeZone, o => o.MapFrom(d => d.TimeZone));
 
-            Mapper.CreateMap<ChurchViewModel, Model.Core.Church>()
+            Mapper.CreateMap<ChurchViewModel, Components.Core.Model.Church>()
                 .ForMember(x => x.Id, o => o.MapFrom(d => d.Id))
                 .ForMember(x => x.Name, o => o.MapFrom(d => d.Name))
                 .ForMember(x => x.TimeZone, o => o.MapFrom(d => d.TimeZone));
 
-            Mapper.CreateMap<Model.Core.Address, AddressViewModel>();
+            Mapper.CreateMap<Components.Core.Model.Address, AddressViewModel>();
 
-            Mapper.CreateMap<Model.Core.Location, LocationViewModel>()
+            Mapper.CreateMap<Components.Core.Model.Location, LocationViewModel>()
                 .ForMember(d => d.Id, o => o.MapFrom(x => x.Id))
                 .ForMember(d => d.Name, o => o.MapFrom(x => x.Name))
                 .ForMember(d => d.Address, o => o.MapFrom(x => x.Address));

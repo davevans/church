@@ -8,12 +8,12 @@
             _coreRepository = coreRepository;
         }
 
-        public Model.Core.Church GetById(int churchId)
+        public Model.Church GetById(int churchId)
         {
             return _coreRepository.GetById(churchId);
         }
 
-        public void Add(Model.Core.Church church)
+        public void Add(Model.Church church)
         {
             _coreRepository.Add(church);
         }

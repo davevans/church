@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
@@ -24,7 +25,7 @@ namespace Church.Host.Owin.Core.Controllers
             var church = _churchService.GetById(churchId);
             return church == null ?
                 Request.CreateErrorResponse(HttpStatusCode.NotFound, "Church {0} not found.".FormatWith(churchId))
-                : Request.CreateResponse(HttpStatusCode.OK, Mapper.Map<Model.Core.Church, ChurchViewModel>(church));
+                : Request.CreateResponse(HttpStatusCode.OK, Mapper.Map<Components.Core.Model.Church, ChurchViewModel>(church));
         }
 
         [HttpPost]
@@ -36,10 +37,10 @@ namespace Church.Host.Owin.Core.Controllers
                 return Request.CreateErrorResponse(HttpStatusCode.BadRequest, @"Invalid Church");
             }
 
-            var church = Mapper.Map<ChurchViewModel, Model.Core.Church>(churchViewModel);
+            var church = Mapper.Map<ChurchViewModel, Components.Core.Model.Church>(churchViewModel);
             _churchService.Add(church);
 
-            var responseViewModel = Mapper.Map<Model.Core.Church, ChurchViewModel>(church);
+            var responseViewModel = Mapper.Map<Components.Core.Model.Church, ChurchViewModel>(church);
             return Request.CreateResponse(HttpStatusCode.Created, responseViewModel);
         }
 
@@ -53,7 +54,7 @@ namespace Church.Host.Owin.Core.Controllers
             {
                 throw new HttpResponseException(HttpStatusCode.NotFound);
             }
-            return Mapper.MapList<Model.Core.Location, LocationViewModel>(church.Locations);
+            return Mapper.MapList<Components.Core.Model.Location, LocationViewModel>(church.Locations);
         }
     }
 }

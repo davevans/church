@@ -120,10 +120,6 @@
       <Project>{dc8504ad-f791-4c54-83ca-7727cc1d7e2a}</Project>
       <Name>Church.Components.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Church.Model\Church.Model.csproj">
-      <Project>{3563e57a-a00f-4d0b-8e02-099d3315d954}</Project>
-      <Name>Church.Model</Name>
-    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

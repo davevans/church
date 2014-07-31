@@ -2,7 +2,7 @@
 
 namespace Church.Components.Core.Repository.ModelMappings
 {
-    public class TimeZoneMappings : EntityTypeConfiguration<Model.Core.TimeZone>
+    public class TimeZoneMappings : EntityTypeConfiguration<Model.TimeZone>
     {
         public TimeZoneMappings()
         {

@@ -1,5 +1,5 @@
 ﻿using System.Data.Entity.ModelConfiguration;
-using Church.Model.Core;
+using Church.Components.Core.Model;
 
 namespace Church.Components.Core.Repository.ModelMappings
 {

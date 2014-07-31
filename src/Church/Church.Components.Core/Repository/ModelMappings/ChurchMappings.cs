@@ -2,7 +2,7 @@
 
 namespace Church.Components.Core.Repository.ModelMappings
 {
-    public class ChurchMappings : EntityTypeConfiguration<Model.Core.Church>
+    public class ChurchMappings : EntityTypeConfiguration<Model.Church>
     {
         public ChurchMappings()
         {

@@ -43,7 +43,7 @@ namespace Church.IntegrationTests
                 const string fakeName = "FakeChurch";
 
                 var mockChurchService = MockRepository.GenerateMock<IChurchService>();
-                mockChurchService.Expect(x => x.GetById(churchId)).Return(new Model.Core.Church
+                mockChurchService.Expect(x => x.GetById(churchId)).Return(new Components.Core.Model.Church
                 {
                     Id = churchId,
                     Name = fakeName
@@ -57,7 +57,7 @@ namespace Church.IntegrationTests
                 var json = response.Content.ReadAsStringAsync().Result;
 
                 //ASSERT
-                var actual = JsonConvert.DeserializeObject<Model.Core.Church>(json);
+                var actual = JsonConvert.DeserializeObject<Components.Core.Model.Church>(json);
                 Assert.AreEqual(churchId, actual.Id);
                 Assert.AreEqual(fakeName, actual.Name);
             }
@@ -98,7 +98,7 @@ namespace Church.IntegrationTests
                 };
 
                 var mockChurchService = MockRepository.GenerateMock<IChurchService>();
-                mockChurchService.Expect(x => x.Add(Arg<Model.Core.Church>.Matches(c => c.Name == "Foo")));
+                mockChurchService.Expect(x => x.Add(Arg<Components.Core.Model.Church>.Matches(c => c.Name == "Foo")));
                 Container.Register(typeof (IChurchService), mockChurchService);
 
                 //ACT
@@ -124,8 +124,8 @@ namespace Church.IntegrationTests
                 };
 
                 var mockChurchService = MockRepository.GenerateStub<IChurchService>();
-                mockChurchService.Stub(x => x.Add(Arg<Model.Core.Church>.Is.Anything))
-                                 .Callback((Model.Core.Church c) =>
+                mockChurchService.Stub(x => x.Add(Arg<Components.Core.Model.Church>.Is.Anything))
+                                 .Callback((Components.Core.Model.Church c) =>
                                  {
                                      c.Id = 101;
                                      return true;
@@ -157,7 +157,7 @@ namespace Church.IntegrationTests
                 };
 
                 var mockChurchService = MockRepository.GenerateStub<IChurchService>();
-                mockChurchService.Stub(x => x.Add(Arg<Model.Core.Church>.Is.Anything)).Callback((Model.Core.Church c) =>{ c.Id = 101; return true; });
+                mockChurchService.Stub(x => x.Add(Arg<Components.Core.Model.Church>.Is.Anything)).Callback((Components.Core.Model.Church c) => { c.Id = 101; return true; });
                 Container.Register(typeof(IChurchService), mockChurchService);
 
                 //ACT
