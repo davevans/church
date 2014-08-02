@@ -86,6 +86,10 @@
       <Project>{5616031c-ee10-437f-9a26-6d3b1081bb06}</Project>
       <Name>Church.Host.Owin.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Church.Types\Church.Types.csproj">
+      <Project>{f6f4a697-cf74-4b52-9414-4679686783cc}</Project>
+      <Name>Church.Types</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config">

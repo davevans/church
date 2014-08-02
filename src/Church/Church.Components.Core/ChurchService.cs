@@ -23,7 +23,10 @@ namespace Church.Components.Core
         public void Add(Model.Church church)
         {
             Error error;
-            bool success = _churchRepository.TryAdd(church, out error);
+            if (!_churchRepository.TryAdd(church, out error))
+            {
+                throw new ErrorException("Failed to add church.", error);
+            }
         }
 
         public void Start()

@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using System.Net.Http;
+using Church.Common.Structures;
 using Church.Components.Core;
 using Church.Host.Owin.Core;
 using Church.Host.Owin.Core.ViewModels;
@@ -214,6 +215,53 @@ namespace Church.IntegrationTests
                 //ASSERT
                 Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode, "Expected HttpStatusCode of BadRequest");
             }
+
+            [Test]
+            public void ReturnsBadRequestForDuplicateChurchName()
+            {
+                //arrange
+                var churchViewModel = new ChurchViewModel
+                {
+                    Name = "MyChurch",
+                };
+
+                var mockChurchService = MockRepository.GenerateStub<IChurchService>();
+                Container.Register(typeof(IChurchService), mockChurchService);
+                mockChurchService.Expect(x => x.Add(Arg<Components.Core.Model.Church>.Is.Anything))
+                                 .Throw(new ErrorException(Types.Core.ChurchErrors.DuplicateChurchName));
+
+                //ACT
+                var response = Server.HttpClient.PostAsJsonAsync("/api/church", churchViewModel).Result;
+
+                //ASSERT
+                Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode, "Expected HttpStatusCode of BadRequest");
+            }
+
+            [Test]
+            public void ReturnsBadRequestForDuplicateChurchNameWithErrorMessages()
+            {
+                //arrange
+                var churchViewModel = new ChurchViewModel
+                {
+                    Name = "MyChurch",
+                };
+
+                var mockChurchService = MockRepository.GenerateStub<IChurchService>();
+                Container.Register(typeof(IChurchService), mockChurchService);
+                mockChurchService.Expect(x => x.Add(Arg<Components.Core.Model.Church>.Is.Anything))
+                                 .Throw(new ErrorException(Types.Core.ChurchErrors.DuplicateChurchName));
+
+                //ACT
+                var response = Server.HttpClient.PostAsJsonAsync("/api/church", churchViewModel).Result;
+                var badrequestViewModel = JsonConvert.DeserializeObject<BadRequestViewModel>(response.Content.ReadAsStringAsync().Result);
+
+                //ASSERT
+                Assert.IsNotNull(badrequestViewModel);
+                Assert.IsNotEmpty(badrequestViewModel.Errors, "Expected error messages");
+
+            }
+
+
 
         }
 

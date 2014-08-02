@@ -1,9 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using Church.Common.Extensions;
 using Church.Common.Mapping;
+using Church.Common.Structures;
 using Church.Components.Core;
 using Church.Host.Owin.Core.ViewModels;
 
@@ -31,16 +34,36 @@ namespace Church.Host.Owin.Core.Controllers
         [Route("api/church")]
         public HttpResponseMessage AddChurch([FromBody]ChurchViewModel churchViewModel)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, @"Invalid Church");
+                if (!ModelState.IsValid)
+                {
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, new BadRequestViewModel
+                    {
+                        Errors = ModelState.Values.SelectMany(e => e.Errors)
+                                                  .Select(x => x.ErrorMessage)
+                                                  .ToList()
+                    });
+                }
+
+                var church = Mapper.Map<ChurchViewModel, Components.Core.Model.Church>(churchViewModel);
+                _churchService.Add(church);
+
+                var responseViewModel = Mapper.Map<Components.Core.Model.Church, ChurchViewModel>(church);
+                return Request.CreateResponse(HttpStatusCode.Created, responseViewModel);
             }
+            catch (ErrorException errorException)
+            {
+                if (errorException.Error.Code == Types.Core.ChurchErrors.DUPLICATE_CHURCH_NAME)
+                {
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, new BadRequestViewModel
+                    {
+                        Errors = new List<string> { @"The church name '{0}' already exists. Church names must be unique.".FormatWith(churchViewModel.Name) }
+                    });
+                }
 
-            var church = Mapper.Map<ChurchViewModel, Components.Core.Model.Church>(churchViewModel);
-            _churchService.Add(church);
-
-            var responseViewModel = Mapper.Map<Components.Core.Model.Church, ChurchViewModel>(church);
-            return Request.CreateResponse(HttpStatusCode.Created, responseViewModel);
+                throw;
+            }
         }
 
 

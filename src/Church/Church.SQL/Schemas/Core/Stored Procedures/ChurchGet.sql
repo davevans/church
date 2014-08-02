@@ -21,9 +21,9 @@ AS
 		ON c.Id = ids.Id
 	JOIN [Core].TimeZone tz
 		ON tz.Id = c.TimeZoneId
-	JOIN [Core].Location loc
+	LEFT JOIN [Core].Location loc
 		ON loc.ChurchId = c.Id
-	JOIN [Core].[Address] a
+	LEFT JOIN [Core].[Address] a
 		ON a.Id = loc.AddressId
 	
 	

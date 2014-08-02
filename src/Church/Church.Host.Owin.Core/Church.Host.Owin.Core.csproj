@@ -109,6 +109,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="ViewModels\AddressViewModel.cs" />
+    <Compile Include="ViewModels\BadRequestViewModel.cs" />
     <Compile Include="ViewModels\ChurchViewModel.cs" />
     <Compile Include="ViewModels\LocationViewModel.cs" />
     <Compile Include="ViewModels\TimeZoneViewModel.cs" />
@@ -121,6 +122,10 @@
     <ProjectReference Include="..\Church.Components.Core\Church.Components.Core.csproj">
       <Project>{dc8504ad-f791-4c54-83ca-7727cc1d7e2a}</Project>
       <Name>Church.Components.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Church.Types\Church.Types.csproj">
+      <Project>{f6f4a697-cf74-4b52-9414-4679686783cc}</Project>
+      <Name>Church.Types</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
