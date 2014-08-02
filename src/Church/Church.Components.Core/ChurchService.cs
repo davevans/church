@@ -1,21 +1,39 @@
-﻿namespace Church.Components.Core
+﻿using Church.Common.Logging;
+using Church.Common.Structures;
+
+
+namespace Church.Components.Core
 {
     public class ChurchService : IChurchService
     {
-        private readonly Repository.ICoreRepository _coreRepository;
-        public ChurchService(Repository.ICoreRepository coreRepository)
+        private readonly Repository.IChurchRepository _churchRepository;
+        private readonly ILogWriter _debug;
+
+        public ChurchService(Repository.IChurchRepository churchRepository, ILogger logger)
         {
-            _coreRepository = coreRepository;
+            _churchRepository = churchRepository;
+            _debug = logger.With(GetType(), LogLevel.Debug);
         }
 
         public Model.Church GetById(int churchId)
         {
-            return _coreRepository.GetById(churchId);
+            return _churchRepository.GetById(churchId);
         }
 
         public void Add(Model.Church church)
         {
-            _coreRepository.Add(church);
+            Error error;
+            bool success = _churchRepository.TryAdd(church, out error);
+        }
+
+        public void Start()
+        {
+            _debug.Log("Starting ChurchService.");
+        }
+
+        public void Stop()
+        {
+            _debug.Log("Stopping ChurchService.");
         }
     }
 }

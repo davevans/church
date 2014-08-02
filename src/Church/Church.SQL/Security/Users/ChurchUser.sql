@@ -13,4 +13,17 @@ GO
 GRANT UPDATE ON SCHEMA :: Core To [ChurchUser]
 GO
 GRANT DELETE ON SCHEMA :: Core To [ChurchUser]
+GO
+
+
+
+/*
+GRANTS FOR STORED PROCEDURES
+*/
+
+GRANT EXECUTE ON [Core].ChurchGet TO [ChurchUser] As [dbo];
+GO
+GRANT EXECUTE ON [Core].ChurchGetById TO [ChurchUser] As [dbo];
+GO
+GRANT EXECUTE ON [Core].ChurchInsert TO [ChurchUser] As [dbo];
 

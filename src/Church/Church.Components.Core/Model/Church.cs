@@ -6,11 +6,8 @@ namespace Church.Components.Core.Model
     {
         public int Id { get; set; }
         public string Name { get; set; }
-
-        public int TimeZoneId { get; set; }
-        public virtual TimeZone TimeZone { get; set; }
-
-        public ICollection<Location> Locations { get; set; }
+        public TimeZone TimeZone { get; set; }
+        public List<Location> Locations { get; set; }
 
         public Church()
         {

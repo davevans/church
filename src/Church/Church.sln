@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Church.IntegrationTests", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Church.Host.Owin.Core", "Church.Host.Owin.Core\Church.Host.Owin.Core.csproj", "{5616031C-EE10-437F-9A26-6D3B1081BB06}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Church.Types", "Church.Types\Church.Types.csproj", "{F6F4A697-CF74-4B52-9414-4679686783CC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,8 +41,15 @@ Global
 		{5616031C-EE10-437F-9A26-6D3B1081BB06}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5616031C-EE10-437F-9A26-6D3B1081BB06}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5616031C-EE10-437F-9A26-6D3B1081BB06}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F6F4A697-CF74-4B52-9414-4679686783CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6F4A697-CF74-4B52-9414-4679686783CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F6F4A697-CF74-4B52-9414-4679686783CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F6F4A697-CF74-4B52-9414-4679686783CC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		EnterpriseLibraryConfigurationToolBinariesPathV6 = packages\EnterpriseLibrary.Common.6.0.1304.0\lib\NET45;packages\EnterpriseLibrary.Data.6.0.1304.0\lib\NET45
 	EndGlobalSection
 EndGlobal

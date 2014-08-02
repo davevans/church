@@ -64,6 +64,9 @@
     <Folder Include="Schemas\Core" />
     <Folder Include="Schemas\Core\Tables" />
     <Folder Include="_PostDeployment" />
+    <Folder Include="Schemas\Core\Stored Procedures" />
+    <Folder Include="Schemas\dbo" />
+    <Folder Include="Schemas\dbo\User Defined Table Types" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Security\ChurchUserLogin.sql" />
@@ -76,6 +79,12 @@
     <Build Include="Schemas\Core\Tables\Location.sql" />
     <None Include="_PostDeployment\Core.Address.Populate.sql" />
     <None Include="_PostDeployment\Core.Location.Populate.sql" />
+    <Build Include="Schemas\dbo\User Defined Table Types\dbo.big_integer_list_tbltype.udtt.sql" />
+    <Build Include="Schemas\dbo\User Defined Table Types\dbo.integer_list_tbltype.udtt.sql" />
+    <Build Include="Schemas\dbo\User Defined Table Types\dbo.nvarchar_list_tbltype.uddt.sql" />
+    <Build Include="Schemas\Core\Stored Procedures\ChurchGet.sql" />
+    <Build Include="Schemas\Core\Stored Procedures\ChurchGetById.sql" />
+    <Build Include="Schemas\Core\Stored Procedures\ChurchInsert.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Church.SQL.Local.publish.xml" />

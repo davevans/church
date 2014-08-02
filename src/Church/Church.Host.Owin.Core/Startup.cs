@@ -1,8 +1,10 @@
 ﻿using System.Web.Http;
-using Church.Common.Mapping;
+using Church.Common.Extensions;
+using Church.Common.Logging;
+using Church.Common.Service;
+using Church.Common.Settings;
 using Church.Components.Core;
 using Church.Components.Core.Repository;
-using Church.Host.Owin.Core.ViewModels;
 using Microsoft.Owin;
 using Owin;
 using TinyIoC;
@@ -22,39 +24,21 @@ namespace Church.Host.Owin.Core
             appBuilder.UseWebApi(HttpConfiguration);
 
             RegisterComponents(container);
-            RegisterMappings();
+            MappingConfiguration.Configure();
 
             HttpConfiguration.MapHttpAttributeRoutes();
             HttpConfiguration.SetDependencyResolver(container);
+
+            //start IServices
+            container.ResolveAll<IService>().ForEach(s => s.Start());
         }
 
         void RegisterComponents(TinyIoCContainer container)
         {
-            container.Register<ICoreRepository, CoreRepository>().AsSingleton();
+            container.Register<ISettingsProvider, AppSettingsProvider>();
+            container.Register<ILogger, Log4NetLogger>();
+            container.Register<IChurchRepository, ChurchRepository>().AsSingleton();
             container.Register<IChurchService, ChurchService>().AsSingleton();
-        }
-
-        private void RegisterMappings()
-        {
-            Mapper.CreateMap<Components.Core.Model.TimeZone, TimeZoneViewModel>();
-            Mapper.CreateMap<TimeZoneViewModel, Components.Core.Model.TimeZone>();
-
-            Mapper.CreateMap<Components.Core.Model.Church, ChurchViewModel>()
-                .ForMember(x => x.Id, o => o.MapFrom(d => d.Id))
-                .ForMember(x => x.Name, o => o.MapFrom(d => d.Name))
-                .ForMember(x => x.TimeZone, o => o.MapFrom(d => d.TimeZone));
-
-            Mapper.CreateMap<ChurchViewModel, Components.Core.Model.Church>()
-                .ForMember(x => x.Id, o => o.MapFrom(d => d.Id))
-                .ForMember(x => x.Name, o => o.MapFrom(d => d.Name))
-                .ForMember(x => x.TimeZone, o => o.MapFrom(d => d.TimeZone));
-
-            Mapper.CreateMap<Components.Core.Model.Address, AddressViewModel>();
-
-            Mapper.CreateMap<Components.Core.Model.Location, LocationViewModel>()
-                .ForMember(d => d.Id, o => o.MapFrom(x => x.Id))
-                .ForMember(d => d.Name, o => o.MapFrom(x => x.Name))
-                .ForMember(d => d.Address, o => o.MapFrom(x => x.Address));
         }
     }
 }
