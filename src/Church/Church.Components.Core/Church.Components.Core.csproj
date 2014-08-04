@@ -52,11 +52,15 @@
     <Compile Include="IChurchService.cs" />
     <Compile Include="Model\Address.cs" />
     <Compile Include="Model\Church.cs" />
+    <Compile Include="Model\Gender.cs" />
     <Compile Include="Model\Location.cs" />
+    <Compile Include="Model\Person.cs" />
     <Compile Include="Model\TimeZone.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repository\ChurchRepository.cs" />
     <Compile Include="Repository\IChurchRepository.cs" />
+    <Compile Include="Repository\IPersonRepository.cs" />
+    <Compile Include="Repository\PersonRepository.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Church.Common\Church.Common.csproj">

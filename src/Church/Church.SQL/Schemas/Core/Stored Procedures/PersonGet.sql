@@ -13,7 +13,8 @@ AS
 		p.ChurchId,
 		p.IsMale,
 		p.Occupation,
-		p.TimeZoneId
+		tz.Id As TimeZoneId,
+		tz.Name As TimeZoneName
 
 	FROM [Core].Person p JOIN @Ids i
 			On p.Id = i.Id
