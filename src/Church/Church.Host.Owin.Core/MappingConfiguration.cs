@@ -13,12 +13,17 @@ namespace Church.Host.Owin.Core
             Mapper.CreateMap<Components.Core.Model.Church, ChurchViewModel>()
                 .ForMember(x => x.Id, o => o.MapFrom(d => d.Id))
                 .ForMember(x => x.Name, o => o.MapFrom(d => d.Name))
-                .ForMember(x => x.TimeZone, o => o.MapFrom(d => d.TimeZone));
+                .ForMember(x => x.TimeZone, o => o.MapFrom(d => d.TimeZone))
+                .ForMember(x => x.Created, o => o.MapFrom(d => d.Created))
+                .ForMember(x => x.LastUpdated, o => o.MapFrom(d => d.LastUpdated));
 
             Mapper.CreateMap<ChurchViewModel, Components.Core.Model.Church>()
                 .ForMember(x => x.Id, o => o.MapFrom(d => d.Id))
                 .ForMember(x => x.Name, o => o.MapFrom(d => d.Name))
-                .ForMember(x => x.TimeZone, o => o.MapFrom(d => d.TimeZone));
+                .ForMember(x => x.TimeZone, o => o.MapFrom(d => d.TimeZone))
+                .ForMember(x => x.Created, o => o.MapFrom(d => d.Created))
+                .ForMember(x => x.LastUpdated, o => o.MapFrom(d => d.LastUpdated))
+                .ForMember(x => x.IsArchived, o => o.UseValue(false));
 
             Mapper.CreateMap<Components.Core.Model.Address, AddressViewModel>();
 

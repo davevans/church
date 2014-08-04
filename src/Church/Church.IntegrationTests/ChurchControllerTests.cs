@@ -1,9 +1,12 @@
 ﻿using System.Net;
 using System.Net.Http;
+using Church.Common.Extensions;
 using Church.Common.Structures;
 using Church.Components.Core;
+using Church.Components.Core.Model;
 using Church.Host.Owin.Core;
 using Church.Host.Owin.Core.ViewModels;
+using Church.Host.Owin.Core.ViewModels.Errors;
 using Microsoft.Owin.Testing;
 using Newtonsoft.Json;
 using NUnit.Framework;
@@ -261,16 +264,192 @@ namespace Church.IntegrationTests
 
             }
 
-
-
         }
 
+        [TestFixture]
+        public class UpdateChurchTests : ChurchControllerTests
+        {
 
+            [Test]
+            public void ReturnsBadRequestForChurchWithNoTimeZone()
+            {
+                //arrange
+                const int churchId = 123;
+                var churchViewModel = new ChurchViewModel
+                {
+                    Name = "MyChurch",
+                };
 
+                var mockChurchService = MockRepository.GenerateStub<IChurchService>();
+                Container.Register(typeof(IChurchService), mockChurchService);
 
+                //ACT
+                var response = Server.HttpClient.PutAsJsonAsync("/api/church/{0}".FormatWith(churchId), churchViewModel).Result;
 
+                //ASSERT
+                Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode, @"Expected bad request for null TimeZone.");
+            }
 
+            [Test]
+            public void ReturnsBadRequestWithErrorsForNullName()
+            {
+                //arrange
+                const int churchId = 123;
+                var churchViewModel = new ChurchViewModel
+                {
+                    Name = null,
+                    TimeZone = new TimeZoneViewModel
+                    {
+                        Id = 20,
+                        Name = "Sydney"
+                    }
+                };
 
+                var mockChurchService = MockRepository.GenerateStub<IChurchService>();
+                Container.Register(typeof(IChurchService), mockChurchService);
+
+                //ACT
+                var response = Server.HttpClient.PutAsJsonAsync("/api/church/{0}".FormatWith(churchId), churchViewModel).Result;
+                var badRequestViewModel = JsonConvert.DeserializeObject<BadRequestViewModel>(response.Content.ReadAsStringAsync().Result);
+
+                //ASSERT
+                Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode, @"Expected bad request for null Name.");
+                Assert.IsNotNull(badRequestViewModel.ErrorMessage, "Expected error message on badRequestViewModel");
+                Assert.IsNotEmpty(badRequestViewModel.Errors, "Expected non empty error collection on badRequestViewModel");
+            }
+
+            [Test]
+            public void ReturnsNotFoundIfChurchDoesntExist()
+            {
+                //arrange
+                const int churchId = 123;
+                var churchViewModel = new ChurchViewModel
+                {
+                    Name = "Foo",
+                    TimeZone = new TimeZoneViewModel
+                    {
+                        Id = 20,
+                        Name = "Sydney"
+                    }
+                };
+
+                var mockChurchService = MockRepository.GenerateStub<IChurchService>();
+                Container.Register(typeof(IChurchService), mockChurchService);
+                mockChurchService.Expect(x => x.GetById(churchId)).Return(null);
+
+                //ACT
+                var response = Server.HttpClient.PutAsJsonAsync("/api/church/{0}".FormatWith(churchId), churchViewModel).Result;
+
+                //Assert
+                Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode, "Expected 404 for church that doesnt exist.");
+            }
+
+            [Test]
+            public void ReturnsBadRequestForDuplicateName()
+            {
+                //Arrange
+                const int churchId = 123;
+                var churchViewModel = new ChurchViewModel
+                {
+                    Name = "Foo",
+                    TimeZone = new TimeZoneViewModel
+                    {
+                        Id = 20,
+                        Name = "Sydney"
+                    }
+                };
+
+                var mockChurchService = MockRepository.GenerateStub<IChurchService>();
+                Container.Register(typeof(IChurchService), mockChurchService);
+
+                mockChurchService.Expect(x => x.GetById(churchId))
+                                 .Return(new Components.Core.Model.Church
+                                 {
+                                    Name = "Foo",
+                                    TimeZone = new TimeZone {Id = 20, Name = "Sydney"}
+                                 });
+
+                mockChurchService.Expect(x => x.Update(Arg<Components.Core.Model.Church>.Is.Anything))
+                                 .Throw(new ErrorException(Types.Core.ChurchErrors.DuplicateChurchName));
+                                 
+
+                //ACT
+                var response = Server.HttpClient.PutAsJsonAsync("/api/church/{0}".FormatWith(churchId), churchViewModel).Result;
+
+                //Assert
+                Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode, "Expected bad request for duplicate church name.");
+                mockChurchService.VerifyAllExpectations();
+            }
+
+            [Test]
+            public void ReturnsOkForSuccessfulUpdate()
+            {
+                //Arrange
+                const int churchId = 123;
+                var churchViewModel = new ChurchViewModel
+                {
+                    Name = "Foo",
+                    TimeZone = new TimeZoneViewModel
+                    {
+                        Id = 20,
+                        Name = "Sydney"
+                    }
+                };
+
+                var mockChurchService = MockRepository.GenerateStub<IChurchService>();
+                Container.Register(typeof(IChurchService), mockChurchService);
+
+                mockChurchService.Expect(x => x.GetById(churchId))
+                                 .Return(new Components.Core.Model.Church
+                                 {
+                                     Name = "Foo",
+                                     TimeZone = new TimeZone { Id = 20, Name = "Sydney" }
+                                 });
+
+                //ACT
+                var response = Server.HttpClient.PutAsJsonAsync("/api/church/{0}".FormatWith(churchId), churchViewModel).Result;
+
+                //Assert
+                Assert.AreEqual(HttpStatusCode.OK, response.StatusCode, "Expected 200 OK for successful update.");
+                mockChurchService.AssertWasCalled(x => x.Update(Arg<Components.Core.Model.Church>.Is.Anything));
+                mockChurchService.VerifyAllExpectations();
+            }
+
+            [Test]
+            public void ChurchObjectPassedToReposHasRequestedChurchId()
+            {
+                //Arrange
+                const int churchId = 123;
+                var churchViewModel = new ChurchViewModel
+                {
+                    Name = "Foo",
+                    TimeZone = new TimeZoneViewModel
+                    {
+                        Id = 20,
+                        Name = "Sydney"
+                    }
+                };
+
+                var mockChurchService = MockRepository.GenerateStub<IChurchService>();
+                Container.Register(typeof(IChurchService), mockChurchService);
+                mockChurchService.Expect(x => x.GetById(churchId))
+                                .Return(new Components.Core.Model.Church
+                                {
+                                    Name = "Foo",
+                                    TimeZone = new TimeZone { Id = 20, Name = "Sydney" }
+                                });
+
+                mockChurchService.Expect(x => x.Update(Arg<Components.Core.Model.Church>.Is.Anything));
+
+                //Act
+                var response = Server.HttpClient.PutAsJsonAsync("/api/church/{0}".FormatWith(churchId), churchViewModel).Result;
+
+                //Assert
+                mockChurchService.AssertWasCalled(x => x.Update(Arg<Components.Core.Model.Church>.Matches(z => z.Id == churchId)));
+                mockChurchService.VerifyAllExpectations();
+
+            }
+        }
     }
 
     

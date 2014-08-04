@@ -5,6 +5,9 @@ AS
 	SELECT 
 		c.Id,
 		c.Name,
+		c.Created,
+		c.LastUpdated,
+		c.IsArchived,
 		tz.Id As TimeZoneId,
 		tz.Name As TimeZoneName,
 		loc.Id As LocationId,

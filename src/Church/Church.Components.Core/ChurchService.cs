@@ -1,5 +1,7 @@
-﻿using Church.Common.Logging;
+﻿using System;
+using Church.Common.Logging;
 using Church.Common.Structures;
+using Church.Common.Xml;
 
 
 namespace Church.Components.Core
@@ -27,6 +29,18 @@ namespace Church.Components.Core
             {
                 throw new ErrorException("Failed to add church.", error);
             }
+
+            _debug.Log("Successfully added church.{0}{1}", Environment.NewLine, church.ToXmlString());
+        }
+
+        public void Update(Model.Church church)
+        {
+            Error error;
+            if (!_churchRepository.TryUpdate(church, out error))
+            {
+                throw new ErrorException("Failed to update church.", error);
+            }
+            _debug.Log("Successfully updated church.{0}{1}", Environment.NewLine, church.ToXmlString());
         }
 
         public void Start()

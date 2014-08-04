@@ -85,6 +85,7 @@
     <Build Include="Schemas\Core\Stored Procedures\ChurchGet.sql" />
     <Build Include="Schemas\Core\Stored Procedures\ChurchGetById.sql" />
     <Build Include="Schemas\Core\Stored Procedures\ChurchInsert.sql" />
+    <Build Include="Schemas\Core\Stored Procedures\ChurchUpdate.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Church.SQL.Local.publish.xml" />

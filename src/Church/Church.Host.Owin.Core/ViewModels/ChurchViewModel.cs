@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Church.Host.Owin.Core.ViewModels
 {
@@ -11,5 +12,8 @@ namespace Church.Host.Owin.Core.ViewModels
 
         [Required(ErrorMessage = "TimeZone is requried.")]
         public TimeZoneViewModel TimeZone { get; set; }
+
+        public DateTime Created { get; set; }
+        public DateTime LastUpdated { get; set; }
     }
 }

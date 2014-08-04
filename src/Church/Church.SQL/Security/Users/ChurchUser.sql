@@ -26,4 +26,6 @@ GO
 GRANT EXECUTE ON [Core].ChurchGetById TO [ChurchUser] As [dbo];
 GO
 GRANT EXECUTE ON [Core].ChurchInsert TO [ChurchUser] As [dbo];
+GO
+GRANT EXECUTE ON [Core].ChurchUpdate TO [ChurchUser] As [dbo];
 

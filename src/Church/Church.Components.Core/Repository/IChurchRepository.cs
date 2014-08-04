@@ -6,5 +6,6 @@ namespace Church.Components.Core.Repository
     {
         Model.Church GetById(int churchId);
         bool TryAdd(Model.Church church, out Error error);
+        bool TryUpdate(Model.Church church, out Error error);
     }
 }

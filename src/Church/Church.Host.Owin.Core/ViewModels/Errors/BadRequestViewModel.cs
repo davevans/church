@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Church.Host.Owin.Core.ViewModels
+namespace Church.Host.Owin.Core.ViewModels.Errors
 {
     public class BadRequestViewModel
     {
