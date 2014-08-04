@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.ComponentModel;
+using System.Net;
 using System.Net.Http;
 using Church.Common.Extensions;
 using Church.Common.Structures;
@@ -448,6 +449,57 @@ namespace Church.IntegrationTests
                 mockChurchService.AssertWasCalled(x => x.Update(Arg<Components.Core.Model.Church>.Matches(z => z.Id == churchId)));
                 mockChurchService.VerifyAllExpectations();
 
+            }
+        }
+
+        [TestFixture]
+        public class ArchiveChurchTests : ChurchControllerTests
+        {
+            [Test]
+            public void ReturnsNotFoundForUnknownChurchId()
+            {
+                //arrange
+                const int churchId = 123;
+
+                var mockChurchService = MockRepository.GenerateStub<IChurchService>();
+                Container.Register(typeof(IChurchService), mockChurchService);
+                mockChurchService.Expect(x => x.GetById(churchId)).Return(null);
+
+                //ACT
+                var response = Server.HttpClient.DeleteAsync("/api/church/{0}".FormatWith(churchId)).Result;
+
+                //Assert
+                Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode, "Expected 404 for deleting a church that doesnt exist.");
+            }
+
+            [Test]
+            public void ReturnsOkForSuccessfulArchive()
+            {
+                //arrange
+                const int churchId = 123;
+
+                var mockChurchService = MockRepository.GenerateStub<IChurchService>();
+                Container.Register(typeof(IChurchService), mockChurchService);
+                mockChurchService.Expect(x => x.GetById(churchId)).Return(new Components.Core.Model.Church
+                {
+                    Id = churchId,
+                    Name = "Foo",
+                    IsArchived = false,
+                    TimeZone = new TimeZone
+                    {
+                        Id =20,
+                        Name = "Sydney"
+                    }
+                });
+
+                mockChurchService.Expect(x => x.Update(Arg<Components.Core.Model.Church>.Matches(c => c.Id == churchId)));
+
+
+                //ACT
+                var response = Server.HttpClient.DeleteAsync("/api/church/{0}".FormatWith(churchId)).Result;
+
+                //Assert
+                Assert.AreEqual(HttpStatusCode.OK, response.StatusCode, "Expected 200 OK for successful archive");
             }
         }
     }

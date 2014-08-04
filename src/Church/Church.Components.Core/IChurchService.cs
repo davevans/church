@@ -7,6 +7,7 @@ namespace Church.Components.Core
         Model.Church GetById(int churchId);
         void Add(Model.Church church);
         void Update(Model.Church church);
+        void Archive(Model.Church church);
 
     }
 }

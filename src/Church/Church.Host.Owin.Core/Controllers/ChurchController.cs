@@ -27,9 +27,15 @@ namespace Church.Host.Owin.Core.Controllers
         public HttpResponseMessage ChurchById(int churchId)
         {
             var church = _churchService.GetById(churchId);
-            return church == null ?
-                Request.CreateErrorResponse(HttpStatusCode.NotFound, "Church {0} not found.".FormatWith(churchId))
-                : Request.CreateResponse(HttpStatusCode.OK, Mapper.Map<Components.Core.Model.Church, ChurchViewModel>(church));
+            if (church == null)
+            {
+                return Request.CreateResponse(HttpStatusCode.NotFound, new NotFoundViewModel
+                {
+                    ErrorMessage = @"Church with Id:{0} not found.".FormatWith(churchId)
+                });
+            }
+
+            return Request.CreateResponse(HttpStatusCode.OK, Mapper.Map<Components.Core.Model.Church, ChurchViewModel>(church));
         }
 
         [HttpPost]
@@ -125,5 +131,24 @@ namespace Church.Host.Owin.Core.Controllers
             }
             return Mapper.MapList<Components.Core.Model.Location, LocationViewModel>(church.Locations);
         }
+
+        [HttpDelete]
+        [Route("api/church/{churchId}")]
+        public HttpResponseMessage ArchiveChurch(int churchId)
+        {
+            var church = _churchService.GetById(churchId);
+            if (church == null)
+            {
+                return Request.CreateResponse(HttpStatusCode.NotFound, new NotFoundViewModel
+                {
+                    ErrorMessage = @"Church with Id:{0} not found.".FormatWith(churchId)
+                }); 
+            }
+
+            _churchService.Archive(church);
+            return Request.CreateResponse(HttpStatusCode.OK);
+        }
+
+
     }
 }

@@ -43,6 +43,13 @@ namespace Church.Components.Core
             _debug.Log("Successfully updated church.{0}{1}", Environment.NewLine, church.ToXmlString());
         }
 
+        public void Archive(Model.Church church)
+        {
+            church.IsArchived = true;
+            Update(church);
+            _debug.Log("Successfully archived church.{0}{1}", Environment.NewLine, church.ToXmlString());
+        }
+
         public void Start()
         {
             _debug.Log("Starting ChurchService.");
