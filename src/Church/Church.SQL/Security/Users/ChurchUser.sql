@@ -29,3 +29,10 @@ GRANT EXECUTE ON [Core].ChurchInsert TO [ChurchUser] As [dbo];
 GO
 GRANT EXECUTE ON [Core].ChurchUpdate TO [ChurchUser] As [dbo];
 
+
+GO
+GRANT EXECUTE ON [Core].PersonGet TO [ChurchUser] As [dbo];
+GO
+GRANT EXECUTE ON [Core].[PersonGetByChurchId] TO [ChurchUser] As [dbo];
+GO
+

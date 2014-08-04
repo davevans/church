@@ -86,10 +86,14 @@
     <Build Include="Schemas\Core\Stored Procedures\ChurchGetById.sql" />
     <Build Include="Schemas\Core\Stored Procedures\ChurchInsert.sql" />
     <Build Include="Schemas\Core\Stored Procedures\ChurchUpdate.sql" />
+    <Build Include="Schemas\Core\Tables\Person.sql" />
+    <Build Include="Schemas\Core\Stored Procedures\PersonGet.sql" />
+    <Build Include="Schemas\Core\Stored Procedures\PersonGetByChurchId.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Church.SQL.Local.publish.xml" />
     <None Include="_PostDeployment\Core.Church.Populate.sql" />
+    <None Include="_PostDeployment\Core.Person.Populate.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Script.PostDeployment.sql" />
