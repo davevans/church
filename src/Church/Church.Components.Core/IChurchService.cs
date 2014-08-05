@@ -8,6 +8,5 @@ namespace Church.Components.Core
         void Add(Model.Church church);
         void Update(Model.Church church);
         void Archive(Model.Church church);
-
     }
 }

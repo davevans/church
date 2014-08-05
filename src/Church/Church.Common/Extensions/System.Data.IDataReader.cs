@@ -44,6 +44,17 @@ namespace Church.Common.Extensions
             return (int)objectValue;
         }
 
+        public static Int16? GetNullableInt16(this IDataReader reader, string columnName)
+        {
+            var objectValue = reader[columnName];
+
+            if (objectValue == DBNull.Value)
+            {
+                return null;
+            }
+            return (Int16)objectValue;
+        }
+
         public static long GetInt64(this IDataReader reader, string columnName, long defaultValue = 0)
         {
             var objectValue = reader[columnName];

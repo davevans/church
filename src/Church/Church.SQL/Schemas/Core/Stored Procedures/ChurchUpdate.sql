@@ -8,7 +8,8 @@ AS
 	UPDATE c
 		SET Name = @Name,
 			TimeZoneId = @TimeZoneId,
-			IsArchived = @IsArchived
+			IsArchived = @IsArchived,
+			LastUpdated = GETUTCDATE()
 	FROM [Core].Church c
 	WHERE
 	c.Id = @Id

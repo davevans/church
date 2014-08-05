@@ -728,6 +728,17 @@ namespace TinyIoC
                 return _Container.AddUpdateRegistration(_Registration, currentFactory.SingletonVariant);
             }
 
+            //public ResolveOptions AsAuto()
+            //{
+            //    var currentFactory = _Container.GetCurrentFactory(_Registration);
+
+            //    if (currentFactory == null)
+            //        throw new TinyIoCRegistrationException(_Registration.Type, "as-auto");
+
+
+
+            //}
+
             /// <summary>
             /// Make registration multi-instance if possible
             /// </summary>

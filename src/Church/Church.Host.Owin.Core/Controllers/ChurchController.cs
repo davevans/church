@@ -17,9 +17,12 @@ namespace Church.Host.Owin.Core.Controllers
     public class ChurchController : ApiController
     {
         private readonly IChurchService _churchService;
-        public ChurchController(IChurchService churchService)
+        private readonly IPersonService _personService;
+
+        public ChurchController(IChurchService churchService, IPersonService personService)
         {
             _churchService = churchService;
+            _personService = personService;
         }
 
         [HttpGet]
@@ -119,18 +122,45 @@ namespace Church.Host.Owin.Core.Controllers
             }
         }
 
-
         [HttpGet]
         [Route("api/church/{churchId}/locations")]
-        public IEnumerable<LocationViewModel> ChurchLocationsByChurchId(int churchId)
+        public HttpResponseMessage ChurchLocationsByChurchId(int churchId)
         {
             var church = _churchService.GetById(churchId);
             if (church == null)
             {
-                throw new HttpResponseException(HttpStatusCode.NotFound);
+                return Request.CreateResponse(HttpStatusCode.NotFound, new NotFoundViewModel
+                {
+                    ErrorMessage = @"Church with Id:{0} not found.".FormatWith(churchId)
+                });
             }
-            return Mapper.MapList<Components.Core.Model.Location, LocationViewModel>(church.Locations);
+            var locationViewModels = Mapper.MapList<Components.Core.Model.Location, LocationViewModel>(church.Locations);
+            return Request.CreateResponse(HttpStatusCode.OK, locationViewModels);
         }
+
+        [HttpGet]
+        [Route("api/church/{churchId}/people")]
+        public HttpResponseMessage ChurchPeople(int churchId)
+        {
+            
+            
+            
+            var church = _churchService.GetById(churchId);
+            if (church == null)
+            {
+                return Request.CreateResponse(HttpStatusCode.NotFound, new NotFoundViewModel
+                {
+                    ErrorMessage = @"Church with Id:{0} not found.".FormatWith(churchId)
+                });
+            }
+
+            var people = _personService.GetPeopleByChurchId(churchId);
+            var personViewModels = Mapper.MapList<Components.Core.Model.Person, PersonViewModel>(people);
+
+            return Request.CreateResponse(HttpStatusCode.OK, personViewModels);
+        }
+
+
 
         [HttpDelete]
         [Route("api/church/{churchId}")]

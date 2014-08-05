@@ -25,8 +25,8 @@ namespace Church.Components.Core.Repository
 
         public IEnumerable<Person> GetByChurchId(int churchId)
         {
-            var command = _sqlDatabase.GetStoredProcCommand("Core.PersonByChurchId");
-            _sqlDatabase.AddInParameter(command, "ChurchId", DbType.Int32);
+            var command = _sqlDatabase.GetStoredProcCommand("Core.PersonGetByChurchId");
+            _sqlDatabase.AddInParameter(command, "ChurchId", DbType.Int32, churchId);
 
             var people = _sqlDatabase.LoadObjects(command, ToPerson);
             _debug.Log("Returned {0} in church Id:{1}.", people.Count, churchId);
@@ -43,13 +43,13 @@ namespace Church.Components.Core.Repository
         private static Person ToPerson(IDataReader reader)
         {
             var person = new Person();
-            person.Id = (int) reader["Id"];
+            person.Id = (long) reader["Id"];
             person.FirstName = reader.GetString("FirstName");
             person.MiddleName = reader.GetString("MiddleName");
             person.LastName = reader.GetString("LastName");
-            person.DateOfBirthDay = (int?) reader["DateOfBirthDay"];
-            person.DateOfBirthMonth = (int?) reader["DateOfBirthMonth"];
-            person.DateOfBirthYear = (int?) reader["DateOfBirthYear"];
+            person.DateOfBirthDay = reader.GetNullableInt16("DateOfBirthDay");
+            person.DateOfBirthMonth = reader.GetNullableInt16("DateOfBirthMonth");
+            person.DateOfBirthYear = reader.GetNullableInt16("DateOfBirthYear");
             person.Gender = (bool) reader["IsMale"] ? Gender.Male : Gender.Female;
             person.IsArchived = (bool) reader["IsArchived"];
             person.TimeZone = new Model.TimeZone

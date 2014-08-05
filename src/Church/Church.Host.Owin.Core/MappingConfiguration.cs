@@ -1,4 +1,5 @@
 ﻿using Church.Common.Mapping;
+using Church.Components.Core.Model;
 using Church.Host.Owin.Core.ViewModels;
 
 namespace Church.Host.Owin.Core
@@ -7,8 +8,8 @@ namespace Church.Host.Owin.Core
     {
         internal static void Configure()
         {
-            Mapper.CreateMap<Components.Core.Model.TimeZone, TimeZoneViewModel>();
-            Mapper.CreateMap<TimeZoneViewModel, Components.Core.Model.TimeZone>();
+            Mapper.CreateMap<TimeZone, TimeZoneViewModel>();
+            Mapper.CreateMap<TimeZoneViewModel, TimeZone>();
 
             Mapper.CreateMap<Components.Core.Model.Church, ChurchViewModel>()
                 .ForMember(x => x.Id, o => o.MapFrom(d => d.Id))
@@ -25,12 +26,27 @@ namespace Church.Host.Owin.Core
                 .ForMember(x => x.LastUpdated, o => o.MapFrom(d => d.LastUpdated))
                 .ForMember(x => x.IsArchived, o => o.UseValue(false));
 
-            Mapper.CreateMap<Components.Core.Model.Address, AddressViewModel>();
+            Mapper.CreateMap<Address, AddressViewModel>();
 
-            Mapper.CreateMap<Components.Core.Model.Location, LocationViewModel>()
+            Mapper.CreateMap<Location, LocationViewModel>()
                 .ForMember(d => d.Id, o => o.MapFrom(x => x.Id))
                 .ForMember(d => d.Name, o => o.MapFrom(x => x.Name))
                 .ForMember(d => d.Address, o => o.MapFrom(x => x.Address));
+
+
+            Mapper.CreateMap<Person, PersonViewModel>()
+                .ForMember(x => x.Id, o => o.MapFrom(d => d.Id))
+                .ForMember(x => x.FirstName, o => o.MapFrom(d => d.FirstName))
+                .ForMember(x => x.LastName, o => o.MapFrom(d => d.LastName))
+                .ForMember(x => x.MiddleName, o => o.MapFrom(d => d.MiddleName))
+                .ForMember(x => x.DateOfBirthDay, o => o.MapFrom(d => d.DateOfBirthDay))
+                .ForMember(x => x.DateOfBirthMonth, o => o.MapFrom(d => d.DateOfBirthMonth))
+                .ForMember(x => x.DateOfBirthYear, o => o.MapFrom(d => d.DateOfBirthYear))
+                .ForMember(x => x.Occupation, o => o.MapFrom(x => x.Occupation))
+                .ForMember(x => x.TimeZone, o => o.MapFrom(x => x.TimeZone))
+                .ForMember(x => x.Gender, o => o.MapFrom(x => x.Gender));
+
+
         }
     }
 }

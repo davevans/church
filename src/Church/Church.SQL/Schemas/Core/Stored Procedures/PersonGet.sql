@@ -13,6 +13,7 @@ AS
 		p.ChurchId,
 		p.IsMale,
 		p.Occupation,
+		p.IsArchived,
 		tz.Id As TimeZoneId,
 		tz.Name As TimeZoneName
 

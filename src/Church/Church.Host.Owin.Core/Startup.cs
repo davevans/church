@@ -30,7 +30,8 @@ namespace Church.Host.Owin.Core
             HttpConfiguration.SetDependencyResolver(container);
 
             //start IServices
-            container.ResolveAll<IService>().ForEach(s => s.Start());
+            var services = container.ResolveAll<IService>();
+            services.ForEach(s => s.Start());
         }
 
         void RegisterComponents(TinyIoCContainer container)
@@ -39,6 +40,8 @@ namespace Church.Host.Owin.Core
             container.Register<ILogger, Log4NetLogger>();
             container.Register<IChurchRepository, ChurchRepository>().AsSingleton();
             container.Register<IChurchService, ChurchService>().AsSingleton();
+            container.Register<IPersonRepository, PersonRepository>().AsSingleton();
+            container.Register<IPersonService, PersonService>().AsSingleton();
         }
     }
 }
