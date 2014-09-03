@@ -1311,6 +1311,21 @@ namespace TinyIoC
 
             return new MultiRegisterOptions(registerOptions);
         }
+
+        public MultiRegisterOptions AutoRegister<TRegiterType>() where TRegiterType : class
+        {
+            Type registerType = typeof (TRegiterType);
+            var registerOptions = new List<RegisterOptions>();
+
+            foreach (var interf in registerType.GetInterfaces())
+            {
+                var type = interf.UnderlyingSystemType;
+                registerOptions.Add(Register(registerType, interf, interf.FullName));
+            }
+
+            return new MultiRegisterOptions(registerOptions);
+        }
+
         #endregion
 
         #region Resolution

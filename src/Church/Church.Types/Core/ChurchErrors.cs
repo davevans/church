@@ -2,6 +2,7 @@
 
 namespace Church.Types.Core
 {
+
     public sealed class ChurchErrors
     {
         public const string SystemCode = "C";

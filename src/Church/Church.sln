@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Church.Host.Owin.Core", "Ch
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Church.Types", "Church.Types\Church.Types.csproj", "{F6F4A697-CF74-4B52-9414-4679686783CC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Church.UnitTests", "Church.UnitTests\Church.UnitTests.csproj", "{CFBC092D-108F-494A-9F52-3A9BD3AC14E4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{F6F4A697-CF74-4B52-9414-4679686783CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F6F4A697-CF74-4B52-9414-4679686783CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F6F4A697-CF74-4B52-9414-4679686783CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CFBC092D-108F-494A-9F52-3A9BD3AC14E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CFBC092D-108F-494A-9F52-3A9BD3AC14E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CFBC092D-108F-494A-9F52-3A9BD3AC14E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CFBC092D-108F-494A-9F52-3A9BD3AC14E4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
