@@ -1,41 +1,44 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using TinyIoC;
+using System.Web.Http.Dependencies;
+using SimpleInjector;
+
 
 namespace Church.Common.Web
 {
-    public class TinyIoCWebApiResolver : System.Web.Http.Dependencies.IDependencyResolver
+    public class WebApiResolver : IDependencyResolver
     {
-        private readonly TinyIoCContainer _container;
+        private readonly Container _container;
 
-        public TinyIoCWebApiResolver(TinyIoCContainer container)
+        public WebApiResolver(Container container)
         {
             _container = container;
         }
 
-        public System.Web.Http.Dependencies.IDependencyScope BeginScope()
+
+        public void Dispose()
         {
-            return this;
+            
         }
 
         public object GetService(Type serviceType)
         {
             try
             {
-                return _container.Resolve(serviceType);
+                return _container.GetInstance(serviceType);
             }
             catch (Exception)
             {
                 return null;
-            }            
+            }
         }
 
         public IEnumerable<object> GetServices(Type serviceType)
         {
             try
             {
-                return _container.ResolveAll(serviceType);
+                return _container.GetAllInstances(serviceType);
             }
             catch (Exception)
             {
@@ -43,9 +46,9 @@ namespace Church.Common.Web
             }
         }
 
-        public void Dispose()
+        public IDependencyScope BeginScope()
         {
-            
+            return this;
         }
     }
 }

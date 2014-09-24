@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-using System.Net;
+﻿using System.Net;
 using System.Net.Http;
 using Church.Common.Extensions;
 using Church.Common.Structures;
@@ -12,7 +11,7 @@ using Microsoft.Owin.Testing;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using Rhino.Mocks;
-using TinyIoC;
+using SimpleInjector;
 
 namespace Church.IntegrationTests
 {
@@ -20,15 +19,12 @@ namespace Church.IntegrationTests
     public class ChurchControllerTests
     {
         protected TestServer Server;
-        protected TinyIoCContainer Container;
+        protected Container Container;
 
         [TestFixtureSetUp]
         public void FixtureInit()
         {
             Server = TestServer.Create<Startup>();
-            Container = new TinyIoCContainer();
-
-            Startup.HttpConfiguration.SetDependencyResolver(Container);
         }
 
         [TestFixtureTearDown]
@@ -36,6 +32,21 @@ namespace Church.IntegrationTests
         {
             Server.Dispose();
         }
+
+        [SetUp]
+        public void Setup()
+        {
+            Container = new Container(new ContainerOptions
+            {
+                AllowOverridingRegistrations = true
+            });
+
+            Startup.SetContainer(Container);
+
+            Container.RegisterSingle(MockRepository.GenerateStub<IChurchService>());
+            Container.RegisterSingle(MockRepository.GenerateStub<IPersonService>());
+        }
+
 
         [TestFixture]
         public class GetChurchByIdTests : ChurchControllerTests
@@ -54,8 +65,7 @@ namespace Church.IntegrationTests
                     Name = fakeName
                 });
 
-                Container.Register(typeof(IChurchService), mockChurchService);
-
+                Container.RegisterSingle(mockChurchService);
 
                 //ACT
                 var response = Server.HttpClient.GetAsync("/api/church/" + churchId).Result;
@@ -75,7 +85,7 @@ namespace Church.IntegrationTests
 
                 var mockChurchService = MockRepository.GenerateMock<IChurchService>();
                 mockChurchService.Expect(x => x.GetById(churchId)).Return(null);
-                Container.Register(typeof(IChurchService), mockChurchService);
+                Container.RegisterSingle(mockChurchService);
 
                 //ACT
                 var response = Server.HttpClient.GetAsync("/api/church/" + churchId).Result;
@@ -104,7 +114,7 @@ namespace Church.IntegrationTests
 
                 var mockChurchService = MockRepository.GenerateMock<IChurchService>();
                 mockChurchService.Expect(x => x.Add(Arg<Components.Core.Model.Church>.Matches(c => c.Name == "Foo")));
-                Container.Register(typeof (IChurchService), mockChurchService);
+                Container.RegisterSingle(mockChurchService);
 
                 //ACT
                 var response = Server.HttpClient.PostAsJsonAsync("/api/church", churchViewModel).Result;
@@ -137,7 +147,7 @@ namespace Church.IntegrationTests
                                  });
 
 
-                Container.Register(typeof(IChurchService), mockChurchService);
+                Container.RegisterSingle(mockChurchService);
 
                 //ACT
                 var response = Server.HttpClient.PostAsJsonAsync("/api/church", churchViewModel).Result;
@@ -163,7 +173,7 @@ namespace Church.IntegrationTests
 
                 var mockChurchService = MockRepository.GenerateStub<IChurchService>();
                 mockChurchService.Stub(x => x.Add(Arg<Components.Core.Model.Church>.Is.Anything)).Callback((Components.Core.Model.Church c) => { c.Id = 101; return true; });
-                Container.Register(typeof(IChurchService), mockChurchService);
+                Container.RegisterSingle(mockChurchService);
 
                 //ACT
                 var response = Server.HttpClient.PostAsJsonAsync("/api/church", churchViewModel).Result;
@@ -192,7 +202,7 @@ namespace Church.IntegrationTests
                 };
 
                 var mockChurchService = MockRepository.GenerateStub<IChurchService>();
-                Container.Register(typeof(IChurchService), mockChurchService);
+                Container.RegisterSingle(mockChurchService);
 
                 //ACT
                 var response = Server.HttpClient.PostAsJsonAsync("/api/church", churchViewModel).Result;
@@ -211,7 +221,7 @@ namespace Church.IntegrationTests
                 };
 
                 var mockChurchService = MockRepository.GenerateStub<IChurchService>();
-                Container.Register(typeof(IChurchService), mockChurchService);
+                Container.RegisterSingle(mockChurchService);
 
                 //ACT
                 var response = Server.HttpClient.PostAsJsonAsync("/api/church", churchViewModel).Result;
@@ -230,7 +240,7 @@ namespace Church.IntegrationTests
                 };
 
                 var mockChurchService = MockRepository.GenerateStub<IChurchService>();
-                Container.Register(typeof(IChurchService), mockChurchService);
+                Container.RegisterSingle(mockChurchService);
                 mockChurchService.Expect(x => x.Add(Arg<Components.Core.Model.Church>.Is.Anything))
                                  .Throw(new ErrorException(Types.Core.ChurchErrors.DuplicateChurchName));
 
@@ -251,7 +261,7 @@ namespace Church.IntegrationTests
                 };
 
                 var mockChurchService = MockRepository.GenerateStub<IChurchService>();
-                Container.Register(typeof(IChurchService), mockChurchService);
+                Container.RegisterSingle(mockChurchService);
                 mockChurchService.Expect(x => x.Add(Arg<Components.Core.Model.Church>.Is.Anything))
                                  .Throw(new ErrorException(Types.Core.ChurchErrors.DuplicateChurchName));
 
@@ -282,7 +292,7 @@ namespace Church.IntegrationTests
                 };
 
                 var mockChurchService = MockRepository.GenerateStub<IChurchService>();
-                Container.Register(typeof(IChurchService), mockChurchService);
+                Container.RegisterSingle(mockChurchService);
 
                 //ACT
                 var response = Server.HttpClient.PutAsJsonAsync("/api/church/{0}".FormatWith(churchId), churchViewModel).Result;
@@ -307,7 +317,7 @@ namespace Church.IntegrationTests
                 };
 
                 var mockChurchService = MockRepository.GenerateStub<IChurchService>();
-                Container.Register(typeof(IChurchService), mockChurchService);
+                Container.RegisterSingle(mockChurchService);
 
                 //ACT
                 var response = Server.HttpClient.PutAsJsonAsync("/api/church/{0}".FormatWith(churchId), churchViewModel).Result;
@@ -335,7 +345,7 @@ namespace Church.IntegrationTests
                 };
 
                 var mockChurchService = MockRepository.GenerateStub<IChurchService>();
-                Container.Register(typeof(IChurchService), mockChurchService);
+                Container.RegisterSingle(mockChurchService);
                 mockChurchService.Expect(x => x.GetById(churchId)).Return(null);
 
                 //ACT
@@ -361,7 +371,7 @@ namespace Church.IntegrationTests
                 };
 
                 var mockChurchService = MockRepository.GenerateStub<IChurchService>();
-                Container.Register(typeof(IChurchService), mockChurchService);
+                Container.RegisterSingle(mockChurchService);
 
                 mockChurchService.Expect(x => x.GetById(churchId))
                                  .Return(new Components.Core.Model.Church
@@ -398,7 +408,7 @@ namespace Church.IntegrationTests
                 };
 
                 var mockChurchService = MockRepository.GenerateStub<IChurchService>();
-                Container.Register(typeof(IChurchService), mockChurchService);
+                Container.RegisterSingle(mockChurchService);
 
                 mockChurchService.Expect(x => x.GetById(churchId))
                                  .Return(new Components.Core.Model.Church
@@ -432,7 +442,7 @@ namespace Church.IntegrationTests
                 };
 
                 var mockChurchService = MockRepository.GenerateStub<IChurchService>();
-                Container.Register(typeof(IChurchService), mockChurchService);
+                Container.RegisterSingle(mockChurchService);
                 mockChurchService.Expect(x => x.GetById(churchId))
                                 .Return(new Components.Core.Model.Church
                                 {
@@ -462,7 +472,7 @@ namespace Church.IntegrationTests
                 const int churchId = 123;
 
                 var mockChurchService = MockRepository.GenerateStub<IChurchService>();
-                Container.Register(typeof(IChurchService), mockChurchService);
+                Container.RegisterSingle(mockChurchService);
                 mockChurchService.Expect(x => x.GetById(churchId)).Return(null);
 
                 //ACT
@@ -479,7 +489,7 @@ namespace Church.IntegrationTests
                 const int churchId = 123;
 
                 var mockChurchService = MockRepository.GenerateStub<IChurchService>();
-                Container.Register(typeof(IChurchService), mockChurchService);
+                Container.RegisterSingle(mockChurchService);
                 mockChurchService.Expect(x => x.GetById(churchId)).Return(new Components.Core.Model.Church
                 {
                     Id = churchId,

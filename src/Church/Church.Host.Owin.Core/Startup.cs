@@ -7,7 +7,8 @@ using Church.Components.Core;
 using Church.Components.Core.Repository;
 using Microsoft.Owin;
 using Owin;
-using TinyIoC;
+using SimpleInjector;
+
 
 [assembly: OwinStartup(typeof(Church.Host.Owin.Core.Startup))]
 namespace Church.Host.Owin.Core
@@ -15,33 +16,50 @@ namespace Church.Host.Owin.Core
     public class Startup
     {
         public static  HttpConfiguration HttpConfiguration;
+        private static Container _container;
+
         public void Configuration(IAppBuilder appBuilder)
         {
-
-            var container = new TinyIoCContainer();
+            var container = new Container();
 
             HttpConfiguration = new HttpConfiguration();
             appBuilder.UseWebApi(HttpConfiguration);
 
-            RegisterComponents(container);
             MappingConfiguration.Configure();
-
             HttpConfiguration.MapHttpAttributeRoutes();
-            HttpConfiguration.SetDependencyResolver(container);
+
+            SetContainer(container);
 
             //start IServices
-            var services = container.ResolveAll<IService>();
+            var services = _container.GetAllInstances<IService>();
             services.ForEach(s => s.Start());
         }
 
-        void RegisterComponents(TinyIoCContainer container)
+        public static void SetContainer(Container container)
         {
-            container.Register<ISettingsProvider, AppSettingsProvider>();
-            container.Register<ILogger, Log4NetLogger>();
-            container.Register<IChurchRepository, ChurchRepository>().AsSingleton();
-            container.Register<IChurchService, ChurchService>().AsSingleton();
-            container.Register<IPersonRepository, PersonRepository>().AsSingleton();
-            container.Register<IPersonService, PersonService>().AsSingleton();
+            _container = container;
+            HttpConfiguration.SetDependencyResolver(container);
+            RegisterComponents();
+        }
+
+        static void RegisterComponents()
+        {
+            _container.RegisterSingle<ISettingsProvider, AppSettingsProvider>();
+            _container.RegisterSingle<ILogger, Log4NetLogger>();
+            _container.RegisterSingle<IChurchRepository, ChurchRepository>();
+            _container.RegisterSingle<IPersonRepository, PersonRepository>();
+
+            //register IServices
+            _container.RegisterSingle<ChurchService>();
+            _container.RegisterSingle<PersonService>();
+
+            //register as IService
+            _container.RegisterAll<IService>(new[]
+            {
+                typeof(ChurchService),
+                typeof(PersonService)
+            });
+
         }
     }
 }

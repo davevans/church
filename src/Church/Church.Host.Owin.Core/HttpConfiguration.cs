@@ -2,23 +2,25 @@
 using System.Net.Http.Formatting;
 using System.Net.Http.Headers;
 using System.Web.Http;
+using Church.Common.Web;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using TinyIoC;
+using SimpleInjector;
 
 namespace Church.Host.Owin.Core
 {
     public class HttpConfiguration : System.Web.Http.HttpConfiguration
     {
         public HttpConfiguration()
-        {            
+        {
+            
             ConfigureJsonSerialization();
             IncludeErrorDetailPolicy = IncludeErrorDetailPolicy.LocalOnly;
         }
 
-        public void SetDependencyResolver(TinyIoCContainer tinyIoCContainer)
+        public void SetDependencyResolver(Container container)
         {
-            DependencyResolver = new Common.Web.TinyIoCWebApiResolver(tinyIoCContainer);
+            DependencyResolver = new WebApiResolver(container);
         }
 
         void ConfigureJsonSerialization()
