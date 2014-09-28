@@ -1,5 +1,7 @@
-﻿using System.Net;
+﻿using System.ComponentModel;
+using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using Church.Common.Extensions;
 using Church.Common.Structures;
 using Church.Components.Core;
@@ -7,11 +9,14 @@ using Church.Components.Core.Model;
 using Church.Host.Owin.Core;
 using Church.Host.Owin.Core.ViewModels;
 using Church.Host.Owin.Core.ViewModels.Errors;
+using Microsoft.CSharp;
 using Microsoft.Owin.Testing;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using Rhino.Mocks;
 using SimpleInjector;
+using Church = Church.Components.Core.Model.Church;
+using Container = SimpleInjector.Container;
 
 namespace Church.IntegrationTests
 {
@@ -57,13 +62,14 @@ namespace Church.IntegrationTests
                 //ARANGE
                 const int churchId = 1;
                 const string fakeName = "FakeChurch";
-
-                var mockChurchService = MockRepository.GenerateMock<IChurchService>();
-                mockChurchService.Expect(x => x.GetById(churchId)).Return(new Components.Core.Model.Church
+                var fakeChurch = new Components.Core.Model.Church
                 {
                     Id = churchId,
                     Name = fakeName
-                });
+                };
+
+                var mockChurchService = MockRepository.GenerateMock<IChurchService>();
+                mockChurchService.Expect(x => x.GetByIdAsync(churchId)).Return(Task.FromResult(fakeChurch));
 
                 Container.RegisterSingle(mockChurchService);
 
@@ -84,7 +90,7 @@ namespace Church.IntegrationTests
                 const int churchId = 1;
 
                 var mockChurchService = MockRepository.GenerateMock<IChurchService>();
-                mockChurchService.Expect(x => x.GetById(churchId)).Return(null);
+                mockChurchService.Expect(x => x.GetByIdAsync(churchId)).Return(Task.FromResult((Components.Core.Model.Church)null));
                 Container.RegisterSingle(mockChurchService);
 
                 //ACT
@@ -112,8 +118,21 @@ namespace Church.IntegrationTests
                     }
                 };
 
+                var newChurch = new Components.Core.Model.Church
+                {
+                    Id = 101,
+                    Name = "Foo",
+                    TimeZone = new TimeZone
+                    {
+                        Id = 20,
+                        Name = "Sydney"
+                    }
+                };
+
                 var mockChurchService = MockRepository.GenerateMock<IChurchService>();
-                mockChurchService.Expect(x => x.Add(Arg<Components.Core.Model.Church>.Matches(c => c.Name == "Foo")));
+                mockChurchService.Expect(x => x.AddAsync(Arg<Components.Core.Model.Church>.Matches(c => c.Name == "Foo")))
+                                 .Return(Task.FromResult(newChurch));
+
                 Container.RegisterSingle(mockChurchService);
 
                 //ACT
@@ -138,14 +157,14 @@ namespace Church.IntegrationTests
                     }
                 };
 
-                var mockChurchService = MockRepository.GenerateStub<IChurchService>();
-                mockChurchService.Stub(x => x.Add(Arg<Components.Core.Model.Church>.Is.Anything))
-                                 .Callback((Components.Core.Model.Church c) =>
-                                 {
-                                     c.Id = 101;
-                                     return true;
-                                 });
+                var fakeResult = new Components.Core.Model.Church
+                {
+                    Id = 101
+                };
 
+                var mockChurchService = MockRepository.GenerateStub<IChurchService>();
+                mockChurchService.Stub(x => x.AddAsync(Arg<Components.Core.Model.Church>.Is.Anything))
+                                 .Return(Task.FromResult(fakeResult));
 
                 Container.RegisterSingle(mockChurchService);
 
@@ -172,7 +191,18 @@ namespace Church.IntegrationTests
                 };
 
                 var mockChurchService = MockRepository.GenerateStub<IChurchService>();
-                mockChurchService.Stub(x => x.Add(Arg<Components.Core.Model.Church>.Is.Anything)).Callback((Components.Core.Model.Church c) => { c.Id = 101; return true; });
+                mockChurchService.Stub(x => x.AddAsync(Arg<Components.Core.Model.Church>.Is.Anything))
+                                    .Return(Task.FromResult(new Components.Core.Model.Church
+                                    {
+                                        Id = 101,
+                                        Name = "St Dav",
+                                        TimeZone = new TimeZone
+                                        {
+                                            Id = 20,
+                                            Name = "Sydney"
+                                        }
+                                    }));            
+                    
                 Container.RegisterSingle(mockChurchService);
 
                 //ACT
@@ -241,7 +271,7 @@ namespace Church.IntegrationTests
 
                 var mockChurchService = MockRepository.GenerateStub<IChurchService>();
                 Container.RegisterSingle(mockChurchService);
-                mockChurchService.Expect(x => x.Add(Arg<Components.Core.Model.Church>.Is.Anything))
+                mockChurchService.Expect(x => x.AddAsync(Arg<Components.Core.Model.Church>.Is.Anything))
                                  .Throw(new ErrorException(Types.Core.ChurchErrors.DuplicateChurchName));
 
                 //ACT
@@ -262,7 +292,7 @@ namespace Church.IntegrationTests
 
                 var mockChurchService = MockRepository.GenerateStub<IChurchService>();
                 Container.RegisterSingle(mockChurchService);
-                mockChurchService.Expect(x => x.Add(Arg<Components.Core.Model.Church>.Is.Anything))
+                mockChurchService.Expect(x => x.AddAsync(Arg<Components.Core.Model.Church>.Is.Anything))
                                  .Throw(new ErrorException(Types.Core.ChurchErrors.DuplicateChurchName));
 
                 //ACT
@@ -346,7 +376,7 @@ namespace Church.IntegrationTests
 
                 var mockChurchService = MockRepository.GenerateStub<IChurchService>();
                 Container.RegisterSingle(mockChurchService);
-                mockChurchService.Expect(x => x.GetById(churchId)).Return(null);
+                mockChurchService.Expect(x => x.GetByIdAsync(churchId)).Return(Task.FromResult((Components.Core.Model.Church)null));
 
                 //ACT
                 var response = Server.HttpClient.PutAsJsonAsync("/api/church/{0}".FormatWith(churchId), churchViewModel).Result;
@@ -373,14 +403,14 @@ namespace Church.IntegrationTests
                 var mockChurchService = MockRepository.GenerateStub<IChurchService>();
                 Container.RegisterSingle(mockChurchService);
 
-                mockChurchService.Expect(x => x.GetById(churchId))
-                                 .Return(new Components.Core.Model.Church
+                mockChurchService.Expect(x => x.GetByIdAsync(churchId))
+                                 .Return(Task.FromResult(new Components.Core.Model.Church
                                  {
-                                    Name = "Foo",
-                                    TimeZone = new TimeZone {Id = 20, Name = "Sydney"}
-                                 });
+                                     Name = "Foo",
+                                     TimeZone = new TimeZone { Id = 20, Name = "Sydney" }
+                                 }));
 
-                mockChurchService.Expect(x => x.Update(Arg<Components.Core.Model.Church>.Is.Anything))
+                mockChurchService.Expect(x => x.UpdateAsync(Arg<Components.Core.Model.Church>.Is.Anything))
                                  .Throw(new ErrorException(Types.Core.ChurchErrors.DuplicateChurchName));
                                  
 
@@ -399,7 +429,7 @@ namespace Church.IntegrationTests
                 const int churchId = 123;
                 var churchViewModel = new ChurchViewModel
                 {
-                    Name = "Foo",
+                    Name = "FooNewName",
                     TimeZone = new TimeZoneViewModel
                     {
                         Id = 20,
@@ -410,19 +440,30 @@ namespace Church.IntegrationTests
                 var mockChurchService = MockRepository.GenerateStub<IChurchService>();
                 Container.RegisterSingle(mockChurchService);
 
-                mockChurchService.Expect(x => x.GetById(churchId))
-                                 .Return(new Components.Core.Model.Church
+                mockChurchService.Expect(x => x.GetByIdAsync(churchId))
+                                 .Return(Task.FromResult(new Components.Core.Model.Church
                                  {
-                                     Name = "Foo",
+                                     Name = "FooOldName",
                                      TimeZone = new TimeZone { Id = 20, Name = "Sydney" }
-                                 });
+                                 }));
+
+                mockChurchService.Expect(x => x.UpdateAsync(Arg<Components.Core.Model.Church>.Matches(y => y.Name == "FooNewName")))
+                                 .Return(Task.FromResult(new Components.Core.Model.Church
+                                 {
+                                     Name = "FooNewName",
+                                     TimeZone = new TimeZone
+                                     {
+                                         Id = 20, 
+                                         Name = "Sydney"
+                                     }
+                                 }));
 
                 //ACT
                 var response = Server.HttpClient.PutAsJsonAsync("/api/church/{0}".FormatWith(churchId), churchViewModel).Result;
 
                 //Assert
                 Assert.AreEqual(HttpStatusCode.OK, response.StatusCode, "Expected 200 OK for successful update.");
-                mockChurchService.AssertWasCalled(x => x.Update(Arg<Components.Core.Model.Church>.Is.Anything));
+                mockChurchService.AssertWasCalled(x => x.UpdateAsync(Arg<Components.Core.Model.Church>.Is.Anything));
                 mockChurchService.VerifyAllExpectations();
             }
 
@@ -443,20 +484,19 @@ namespace Church.IntegrationTests
 
                 var mockChurchService = MockRepository.GenerateStub<IChurchService>();
                 Container.RegisterSingle(mockChurchService);
-                mockChurchService.Expect(x => x.GetById(churchId))
-                                .Return(new Components.Core.Model.Church
-                                {
-                                    Name = "Foo",
-                                    TimeZone = new TimeZone { Id = 20, Name = "Sydney" }
-                                });
+                mockChurchService.Expect(x => x.GetByIdAsync(churchId)).Return(Task.FromResult(new Components.Core.Model.Church
+                {
+                    Name = "Foo",
+                    TimeZone = new TimeZone { Id = 20, Name = "Sydney" }
+                }));
 
-                mockChurchService.Expect(x => x.Update(Arg<Components.Core.Model.Church>.Is.Anything));
+                mockChurchService.Expect(x => x.UpdateAsync(Arg<Components.Core.Model.Church>.Is.Anything));
 
                 //Act
                 var response = Server.HttpClient.PutAsJsonAsync("/api/church/{0}".FormatWith(churchId), churchViewModel).Result;
 
                 //Assert
-                mockChurchService.AssertWasCalled(x => x.Update(Arg<Components.Core.Model.Church>.Matches(z => z.Id == churchId)));
+                mockChurchService.AssertWasCalled(x => x.UpdateAsync(Arg<Components.Core.Model.Church>.Matches(z => z.Id == churchId)));
                 mockChurchService.VerifyAllExpectations();
 
             }
@@ -473,7 +513,7 @@ namespace Church.IntegrationTests
 
                 var mockChurchService = MockRepository.GenerateStub<IChurchService>();
                 Container.RegisterSingle(mockChurchService);
-                mockChurchService.Expect(x => x.GetById(churchId)).Return(null);
+                mockChurchService.Expect(x => x.GetByIdAsync(churchId)).Return(Task.FromResult((Components.Core.Model.Church)null));
 
                 //ACT
                 var response = Server.HttpClient.DeleteAsync("/api/church/{0}".FormatWith(churchId)).Result;
@@ -490,19 +530,30 @@ namespace Church.IntegrationTests
 
                 var mockChurchService = MockRepository.GenerateStub<IChurchService>();
                 Container.RegisterSingle(mockChurchService);
-                mockChurchService.Expect(x => x.GetById(churchId)).Return(new Components.Core.Model.Church
+                mockChurchService.Expect(x => x.GetByIdAsync(churchId)).Return(Task.FromResult(new Components.Core.Model.Church
                 {
                     Id = churchId,
                     Name = "Foo",
                     IsArchived = false,
                     TimeZone = new TimeZone
                     {
-                        Id =20,
+                        Id = 20,    
                         Name = "Sydney"
                     }
-                });
+                }));
 
-                mockChurchService.Expect(x => x.Update(Arg<Components.Core.Model.Church>.Matches(c => c.Id == churchId)));
+                mockChurchService.Expect(x => x.ArchiveAsync(Arg<Components.Core.Model.Church>.Matches(c => c.Id == churchId)))
+                                 .Return(Task.FromResult(new Components.Core.Model.Church
+                                 {
+                                    Id  = churchId,
+                                    Name = "Foo",
+                                    IsArchived = false,
+                                    TimeZone = new TimeZone
+                                    {
+                                        Id = 20,
+                                        Name = "Sydney"
+                                    }
+                                 }));
 
 
                 //ACT

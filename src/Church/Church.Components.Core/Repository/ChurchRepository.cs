@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Data;
+using System.Data.Common;
 using System.Data.SqlClient;
+using System.Threading.Tasks;
 using Church.Common.Extensions;
 using Church.Common.Logging;
 using Church.Common.Settings;
@@ -26,21 +28,19 @@ namespace Church.Components.Core.Repository
             _logWriter = logger.With(GetType(), LogLevel.Debug);
         }
 
-        public Model.Church GetById(int churchId)
+        public async Task<Model.Church> GetByIdAsync(int churchId)
         {
-
             var command = _sqlDatabase.GetStoredProcCommand("Core.ChurchGetById");
             _sqlDatabase.AddInParameter(command, "Id", DbType.Int32, churchId);
 
-            using (var reader = _sqlDatabase.ExecuteReader(command))
+            using (var reader = await _sqlDatabase.ExecuteReaderAsync(command))
             {
                 return ChurchFromReader(reader);
             }
         }
 
-        public bool TryAdd(Model.Church church, out Error error)
+        public async Task<Result<Model.Church>> TryAddAsync(Model.Church church)
         {
-            error = default(Error);
             try
             {
                 var command = _sqlDatabase.GetStoredProcCommand("Core.ChurchInsert");
@@ -48,16 +48,17 @@ namespace Church.Components.Core.Repository
                 _sqlDatabase.AddInParameter(command, "Name", DbType.String, church.Name);
                 _sqlDatabase.AddInParameter(command, "TimeZoneId", DbType.Int32, church.TimeZone.Id);
                 _sqlDatabase.AddOutParameter(command, "Id", DbType.Int32, 4);
-                _sqlDatabase.ExecuteNonQuery(command);
+                await _sqlDatabase.ExecuteNonQueryAsync(command);
 
                 var id = (int)_sqlDatabase.GetParameterValue(command, "Id");
                 church.Id = id;
 
                 _logWriter.Log("Added church. New Id:{0}.", church.Id);
-                return true;
+                return Result<Model.Church>.Success(church);
             }
             catch (SqlException sex)
             {
+                Error error;
                 if (sex.Number == Common.Database.SqlErrorCodes.ConstraintViolation)
                 {
                     error = ChurchErrors.DuplicateChurchName;
@@ -68,26 +69,29 @@ namespace Church.Components.Core.Repository
                     error = ChurchErrors.UnknownError;
                     _logger.Exception(GetType(), "Failed to INSERT church: {0}.".FormatWith(church.ToXmlString(XmlOptions.Lean)), sex);
                 }
+
+                return Result<Model.Church>.Failure(error);
             }
-            return false;
         }
 
-        public bool TryUpdate(Model.Church church, out Error error)
+
+        public async Task<Result<Model.Church>> TryUpdateAsync(Model.Church church)
         {
             try
             {
-                error = default(Error);
+                
                 var command = _sqlDatabase.GetStoredProcCommand(@"Core.ChurchUpdate");
                 _sqlDatabase.AddInParameter(command, "Id", DbType.Int32, church.Id);
                 _sqlDatabase.AddInParameter(command, "Name", DbType.String, church.Name);
                 _sqlDatabase.AddInParameter(command, "TimeZoneId", DbType.Int32, church.TimeZone.Id);
                 _sqlDatabase.AddInParameter(command, "IsArchived", DbType.Boolean, church.IsArchived);
-                _sqlDatabase.ExecuteNonQuery(command);
-                return true;
-                
+                await _sqlDatabase.ExecuteNonQueryAsync(command);
+                return Result<Model.Church>.Success(church);
+
             }
             catch (SqlException sex)
             {
+                Error error;
                 if (sex.Number == Common.Database.SqlErrorCodes.ConstraintViolation)
                 {
                     error = ChurchErrors.DuplicateChurchName;
@@ -98,8 +102,8 @@ namespace Church.Components.Core.Repository
                     error = ChurchErrors.UnknownError;
                     _logger.Exception(GetType(), "Failed to UPDATE church: {0}.".FormatWith(church.ToXmlString()), sex);
                 }
+                return Result<Model.Church>.Failure(error);
             }
-            return false;
         }
 
 

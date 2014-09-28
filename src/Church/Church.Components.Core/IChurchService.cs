@@ -1,12 +1,14 @@
-﻿using Church.Common.Service;
+﻿using System.Threading.Tasks;
+using Church.Common.Service;
 
 namespace Church.Components.Core
 {
     public interface IChurchService : IService
     {
-        Model.Church GetById(int churchId);
-        void Add(Model.Church church);
-        void Update(Model.Church church);
-        void Archive(Model.Church church);
+        
+        Task<Model.Church> GetByIdAsync(int churchId);
+        Task<Model.Church> AddAsync(Model.Church church);
+        Task<Model.Church> UpdateAsync(Model.Church church);
+        Task ArchiveAsync(Model.Church church);
     }
 }

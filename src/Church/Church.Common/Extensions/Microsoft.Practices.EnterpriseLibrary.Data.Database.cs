@@ -1,6 +1,8 @@
-﻿using System.Data.Common;
+﻿using System.Data;
+using System.Data.Common;
 using System.Data.SqlClient;
 using System.Threading;
+using System.Threading.Tasks;
 using Church.Common.Logging;
 using Microsoft.Practices.EnterpriseLibrary.Data.Sql;
 
@@ -50,6 +52,16 @@ namespace Church.Common.Extensions
                 }
             }
         }
+
+	    public static Task<IDataReader> ExecuteReaderAsync(this SqlDatabase db, DbCommand command)
+	    {
+	        return Task<IDataReader>.Factory.FromAsync(db.BeginExecuteReader, db.EndExecuteReader, command, null);
+	    }
+
+	    public static Task<int> ExecuteNonQueryAsync(this SqlDatabase db, DbCommand command)
+	    {
+	        return Task<int>.Factory.FromAsync(db.BeginExecuteNonQuery, db.EndExecuteNonQuery, command, null);
+	    }
 	}
 
    

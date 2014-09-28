@@ -1,11 +1,12 @@
-﻿using Church.Common.Structures;
+﻿using System.Threading.Tasks;
+using Church.Common.Structures;
 
 namespace Church.Components.Core.Repository
 {
     public interface IChurchRepository
     {
-        Model.Church GetById(int churchId);
-        bool TryAdd(Model.Church church, out Error error);
-        bool TryUpdate(Model.Church church, out Error error);
+        Task<Model.Church> GetByIdAsync(int churchId);
+        Task<Result<Model.Church>> TryAddAsync(Model.Church church);
+        Task<Result<Model.Church>> TryUpdateAsync(Model.Church church);
     }
 }

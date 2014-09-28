@@ -94,6 +94,7 @@
     <Compile Include="Settings\ISettingsProvider.cs" />
     <Compile Include="Structures\Error.cs" />
     <Compile Include="Structures\ErrorException.cs" />
+    <Compile Include="Structures\Result.cs" />
     <Compile Include="Validation\ValidateChildAttribute.cs" />
     <Compile Include="Validation\ValidationResults.cs" />
     <Compile Include="Validation\Validator.cs" />

@@ -50,8 +50,8 @@ namespace Church.Host.Owin.Core
             _container.RegisterSingle<IPersonRepository, PersonRepository>();
 
             //register IServices
-            _container.RegisterSingle<ChurchService>();
-            _container.RegisterSingle<PersonService>();
+            _container.RegisterSingle<IChurchService, ChurchService>();
+            _container.RegisterSingle<IPersonService, PersonService>();
 
             //register as IService
             _container.RegisterAll<IService>(new[]

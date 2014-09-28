@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web.Http;
 using Church.Common.Extensions;
 using Church.Common.Mapping;
@@ -27,9 +28,9 @@ namespace Church.Host.Owin.Core.Controllers
 
         [HttpGet]
         [Route("api/church/{churchId}")]
-        public HttpResponseMessage ChurchById(int churchId)
+        public async Task<HttpResponseMessage> ChurchById(int churchId)
         {
-            var church = _churchService.GetById(churchId);
+            var church = await _churchService.GetByIdAsync(churchId);
             if (church == null)
             {
                 return Request.CreateResponse(HttpStatusCode.NotFound, new NotFoundViewModel
@@ -43,7 +44,7 @@ namespace Church.Host.Owin.Core.Controllers
 
         [HttpPost]
         [Route("api/church")]
-        public HttpResponseMessage AddChurch([FromBody]ChurchViewModel churchViewModel)
+        public async Task<HttpResponseMessage> AddChurch([FromBody]ChurchViewModel churchViewModel)
         {
             try
             {
@@ -58,9 +59,9 @@ namespace Church.Host.Owin.Core.Controllers
                 }
 
                 var church = Mapper.Map<ChurchViewModel, Components.Core.Model.Church>(churchViewModel);
-                _churchService.Add(church);
+                var newlyCreatedChurch = await _churchService.AddAsync(church);
 
-                var responseViewModel = Mapper.Map<Components.Core.Model.Church, ChurchViewModel>(church);
+                var responseViewModel = Mapper.Map<Components.Core.Model.Church, ChurchViewModel>(newlyCreatedChurch);
                 return Request.CreateResponse(HttpStatusCode.Created, responseViewModel);
             }
             catch (ErrorException errorException)
@@ -79,7 +80,7 @@ namespace Church.Host.Owin.Core.Controllers
 
         [HttpPut]
         [Route("api/church/{churchId}")]
-        public HttpResponseMessage UpdateChurch(int churchId, [FromBody] ChurchViewModel churchViewModel)
+        public async Task<HttpResponseMessage> UpdateChurch(int churchId, [FromBody] ChurchViewModel churchViewModel)
         {
             if (!ModelState.IsValid)
             {
@@ -91,7 +92,7 @@ namespace Church.Host.Owin.Core.Controllers
                 });
             }
 
-            var existing = _churchService.GetById(churchId);
+            var existing = await _churchService.GetByIdAsync(churchId);
             if (existing == null)
             {
                 return Request.CreateResponse(HttpStatusCode.NotFound, new NotFoundViewModel
@@ -104,8 +105,8 @@ namespace Church.Host.Owin.Core.Controllers
             {
                 churchViewModel.Id = churchId;
                 var church = Mapper.Map<ChurchViewModel, Components.Core.Model.Church>(churchViewModel);
-                _churchService.Update(church);
-                var viewmodel = Mapper.Map<Components.Core.Model.Church, ChurchViewModel>(church);
+                var updated = await _churchService.UpdateAsync(church);
+                var viewmodel = Mapper.Map<Components.Core.Model.Church, ChurchViewModel>(updated);
                 return Request.CreateResponse(HttpStatusCode.OK, viewmodel);
             }
             catch (ErrorException errorException) 
@@ -124,9 +125,9 @@ namespace Church.Host.Owin.Core.Controllers
 
         [HttpGet]
         [Route("api/church/{churchId}/locations")]
-        public HttpResponseMessage ChurchLocationsByChurchId(int churchId)
+        public async Task<HttpResponseMessage> ChurchLocationsByChurchId(int churchId)
         {
-            var church = _churchService.GetById(churchId);
+            var church = await _churchService.GetByIdAsync(churchId);
             if (church == null)
             {
                 return Request.CreateResponse(HttpStatusCode.NotFound, new NotFoundViewModel
@@ -140,12 +141,9 @@ namespace Church.Host.Owin.Core.Controllers
 
         [HttpGet]
         [Route("api/church/{churchId}/people")]
-        public HttpResponseMessage ChurchPeople(int churchId)
+        public async Task<HttpResponseMessage> ChurchPeople(int churchId)
         {
-            
-            
-            
-            var church = _churchService.GetById(churchId);
+            var church = await _churchService.GetByIdAsync(churchId);
             if (church == null)
             {
                 return Request.CreateResponse(HttpStatusCode.NotFound, new NotFoundViewModel
@@ -164,9 +162,9 @@ namespace Church.Host.Owin.Core.Controllers
 
         [HttpDelete]
         [Route("api/church/{churchId}")]
-        public HttpResponseMessage ArchiveChurch(int churchId)
+        public async Task<HttpResponseMessage> ArchiveChurch(int churchId)
         {
-            var church = _churchService.GetById(churchId);
+            var church = await _churchService.GetByIdAsync(churchId);
             if (church == null)
             {
                 return Request.CreateResponse(HttpStatusCode.NotFound, new NotFoundViewModel
@@ -175,7 +173,7 @@ namespace Church.Host.Owin.Core.Controllers
                 }); 
             }
 
-            _churchService.Archive(church);
+            await _churchService.ArchiveAsync(church);
             return Request.CreateResponse(HttpStatusCode.OK);
         }
 
