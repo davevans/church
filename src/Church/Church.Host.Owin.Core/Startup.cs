@@ -1,11 +1,14 @@
-﻿using System.Web.Http;
+﻿using System;
+using System.Web.Http;
 using Church.Common.Extensions;
 using Church.Common.Logging;
 using Church.Common.Service;
 using Church.Common.Settings;
 using Church.Components.Core;
 using Church.Components.Core.Repository;
+using Church.Host.Owin.Core.Authentication;
 using Microsoft.Owin;
+using Microsoft.Owin.Security.OAuth;
 using Owin;
 using SimpleInjector;
 
@@ -23,12 +26,25 @@ namespace Church.Host.Owin.Core
             var container = new Container();
 
             HttpConfiguration = new HttpConfiguration();
-            appBuilder.UseWebApi(HttpConfiguration);
+            
 
             MappingConfiguration.Configure();
             HttpConfiguration.MapHttpAttributeRoutes();
 
             SetContainer(container);
+
+
+            //Auth
+            appBuilder.UseOAuthAuthorizationServer(new OAuthAuthorizationServerOptions
+            {
+                AllowInsecureHttp = true,
+                TokenEndpointPath = new PathString("/token"),
+                AccessTokenExpireTimeSpan = TimeSpan.FromHours(1),
+                Provider = new ChurchOAuthAuthorizationServerProvider()
+            });
+
+            appBuilder.UseOAuthBearerAuthentication(new OAuthBearerAuthenticationOptions());
+            appBuilder.UseWebApi(HttpConfiguration);
 
             //start IServices
             var services = _container.GetAllInstances<IService>();

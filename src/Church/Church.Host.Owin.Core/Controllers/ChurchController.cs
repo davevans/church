@@ -15,6 +15,7 @@ using Church.Host.Owin.Core.ViewModels.Errors;
 
 namespace Church.Host.Owin.Core.Controllers
 {
+    [Authorize]
     public class ChurchController : ApiController
     {
         private readonly IChurchService _churchService;

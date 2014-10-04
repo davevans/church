@@ -17,6 +17,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Church.Types", "Church.Type
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Church.UnitTests", "Church.UnitTests\Church.UnitTests.csproj", "{CFBC092D-108F-494A-9F52-3A9BD3AC14E4}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{A376A92E-A66B-483F-9719-63C6E6A70593}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Church.ConsoleApp", "Church.ConsoleApp\Church.ConsoleApp.csproj", "{678CD616-5FCD-4484-B8D1-60C187085B9C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,9 +55,18 @@ Global
 		{CFBC092D-108F-494A-9F52-3A9BD3AC14E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CFBC092D-108F-494A-9F52-3A9BD3AC14E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CFBC092D-108F-494A-9F52-3A9BD3AC14E4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{678CD616-5FCD-4484-B8D1-60C187085B9C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{678CD616-5FCD-4484-B8D1-60C187085B9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{678CD616-5FCD-4484-B8D1-60C187085B9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{678CD616-5FCD-4484-B8D1-60C187085B9C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{3BB84EC6-7033-41DF-A9B5-70EFC5532E2C} = {A376A92E-A66B-483F-9719-63C6E6A70593}
+		{CFBC092D-108F-494A-9F52-3A9BD3AC14E4} = {A376A92E-A66B-483F-9719-63C6E6A70593}
+		{678CD616-5FCD-4484-B8D1-60C187085B9C} = {A376A92E-A66B-483F-9719-63C6E6A70593}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		EnterpriseLibraryConfigurationToolBinariesPathV6 = packages\EnterpriseLibrary.Common.6.0.1304.0\lib\NET45;packages\EnterpriseLibrary.Data.6.0.1304.0\lib\NET45
