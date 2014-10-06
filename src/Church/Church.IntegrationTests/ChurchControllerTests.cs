@@ -1,45 +1,27 @@
-﻿using System.ComponentModel;
-using System.Net;
+﻿using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Church.Common.Extensions;
 using Church.Common.Structures;
 using Church.Components.Core;
-using Church.Components.Core.Model;
 using Church.Host.Owin.Core;
 using Church.Host.Owin.Core.ViewModels;
 using Church.Host.Owin.Core.ViewModels.Errors;
-using Microsoft.CSharp;
-using Microsoft.Owin.Testing;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using Rhino.Mocks;
 using SimpleInjector;
-using Church = Church.Components.Core.Model.Church;
 using Container = SimpleInjector.Container;
+using TimeZone = Church.Components.Core.Model.TimeZone;
 
 namespace Church.IntegrationTests
 {
     
-    public class ChurchControllerTests
+    public class ChurchControllerTests : BaseControllerTest
     {
-        protected TestServer Server;
-        protected Container Container;
-
-        [TestFixtureSetUp]
-        public void FixtureInit()
-        {
-            Server = TestServer.Create<Startup>();
-        }
-
-        [TestFixtureTearDown]
-        public void FixtureDispose()
-        {
-            Server.Dispose();
-        }
 
         [SetUp]
-        public void Setup()
+        public void Setup() //runs before every test
         {
             Container = new Container(new ContainerOptions
             {
@@ -50,6 +32,11 @@ namespace Church.IntegrationTests
 
             Container.RegisterSingle(MockRepository.GenerateStub<IChurchService>());
             Container.RegisterSingle(MockRepository.GenerateStub<IPersonService>());
+
+            var mockAuthService = MockRepository.GenerateStub<IAuthenticationService>();
+            mockAuthService.Stub(x => x.Authenticate(null, null)).IgnoreArguments().Return(true);
+            Container.RegisterSingle(mockAuthService);
+
         }
 
 
@@ -74,7 +61,8 @@ namespace Church.IntegrationTests
                 Container.RegisterSingle(mockChurchService);
 
                 //ACT
-                var response = Server.HttpClient.GetAsync("/api/church/" + churchId).Result;
+                var httpClient = GetHttpClientWithAuthentication();
+                var response = httpClient.GetAsync("/api/church/" + churchId).Result;
                 var json = response.Content.ReadAsStringAsync().Result;
 
                 //ASSERT
@@ -94,7 +82,8 @@ namespace Church.IntegrationTests
                 Container.RegisterSingle(mockChurchService);
 
                 //ACT
-                var response = Server.HttpClient.GetAsync("/api/church/" + churchId).Result;
+                var httpClient = GetHttpClientWithAuthentication();
+                var response = httpClient.GetAsync("/api/church/" + churchId).Result;
 
                 //ASSERT
                 Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode, "Expected 404.");
@@ -136,7 +125,8 @@ namespace Church.IntegrationTests
                 Container.RegisterSingle(mockChurchService);
 
                 //ACT
-                var response = Server.HttpClient.PostAsJsonAsync("/api/church", churchViewModel).Result;
+                var httpClient = GetHttpClientWithAuthentication();
+                var response = httpClient.PostAsJsonAsync("/api/church", churchViewModel).Result;
 
                 //ASSERT
                 Assert.AreEqual(HttpStatusCode.Created, response.StatusCode, "Expected HttpStatusCode of CREATED");
@@ -169,7 +159,8 @@ namespace Church.IntegrationTests
                 Container.RegisterSingle(mockChurchService);
 
                 //ACT
-                var response = Server.HttpClient.PostAsJsonAsync("/api/church", churchViewModel).Result;
+                var httpClient = GetHttpClientWithAuthentication();
+                var response = httpClient.PostAsJsonAsync("/api/church", churchViewModel).Result;
                 var newChurch = JsonConvert.DeserializeObject<ChurchViewModel>(response.Content.ReadAsStringAsync().Result);
 
                 //ASSERT
@@ -206,7 +197,8 @@ namespace Church.IntegrationTests
                 Container.RegisterSingle(mockChurchService);
 
                 //ACT
-                var response = Server.HttpClient.PostAsJsonAsync("/api/church", churchViewModel).Result;
+                var httpClient = GetHttpClientWithAuthentication();
+                var response = httpClient.PostAsJsonAsync("/api/church", churchViewModel).Result;
                 var newChurch = JsonConvert.DeserializeObject<ChurchViewModel>(response.Content.ReadAsStringAsync().Result);
 
                 //ASSERT
@@ -235,7 +227,8 @@ namespace Church.IntegrationTests
                 Container.RegisterSingle(mockChurchService);
 
                 //ACT
-                var response = Server.HttpClient.PostAsJsonAsync("/api/church", churchViewModel).Result;
+                var httpClient = GetHttpClientWithAuthentication();
+                var response = httpClient.PostAsJsonAsync("/api/church", churchViewModel).Result;
 
                 //ASSERT
                 Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode, "Expected HttpStatusCode of BadRequest");
@@ -254,7 +247,8 @@ namespace Church.IntegrationTests
                 Container.RegisterSingle(mockChurchService);
 
                 //ACT
-                var response = Server.HttpClient.PostAsJsonAsync("/api/church", churchViewModel).Result;
+                var httpClient = GetHttpClientWithAuthentication();
+                var response = httpClient.PostAsJsonAsync("/api/church", churchViewModel).Result;
 
                 //ASSERT
                 Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode, "Expected HttpStatusCode of BadRequest");
@@ -275,7 +269,8 @@ namespace Church.IntegrationTests
                                  .Throw(new ErrorException(Types.Core.ChurchErrors.DuplicateChurchName));
 
                 //ACT
-                var response = Server.HttpClient.PostAsJsonAsync("/api/church", churchViewModel).Result;
+                var httpClient = GetHttpClientWithAuthentication();
+                var response = httpClient.PostAsJsonAsync("/api/church", churchViewModel).Result;
 
                 //ASSERT
                 Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode, "Expected HttpStatusCode of BadRequest");
@@ -296,7 +291,8 @@ namespace Church.IntegrationTests
                                  .Throw(new ErrorException(Types.Core.ChurchErrors.DuplicateChurchName));
 
                 //ACT
-                var response = Server.HttpClient.PostAsJsonAsync("/api/church", churchViewModel).Result;
+                var httpClient = GetHttpClientWithAuthentication();
+                var response = httpClient.PostAsJsonAsync("/api/church", churchViewModel).Result;
                 var badrequestViewModel = JsonConvert.DeserializeObject<BadRequestViewModel>(response.Content.ReadAsStringAsync().Result);
 
                 //ASSERT
@@ -325,7 +321,8 @@ namespace Church.IntegrationTests
                 Container.RegisterSingle(mockChurchService);
 
                 //ACT
-                var response = Server.HttpClient.PutAsJsonAsync("/api/church/{0}".FormatWith(churchId), churchViewModel).Result;
+                var httpClient = GetHttpClientWithAuthentication();
+                var response = httpClient.PutAsJsonAsync("/api/church/{0}".FormatWith(churchId), churchViewModel).Result;
 
                 //ASSERT
                 Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode, @"Expected bad request for null TimeZone.");
@@ -350,7 +347,8 @@ namespace Church.IntegrationTests
                 Container.RegisterSingle(mockChurchService);
 
                 //ACT
-                var response = Server.HttpClient.PutAsJsonAsync("/api/church/{0}".FormatWith(churchId), churchViewModel).Result;
+                var httpClient = GetHttpClientWithAuthentication();
+                var response = httpClient.PutAsJsonAsync("/api/church/{0}".FormatWith(churchId), churchViewModel).Result;
                 var badRequestViewModel = JsonConvert.DeserializeObject<BadRequestViewModel>(response.Content.ReadAsStringAsync().Result);
 
                 //ASSERT
@@ -379,7 +377,8 @@ namespace Church.IntegrationTests
                 mockChurchService.Expect(x => x.GetByIdAsync(churchId)).Return(Task.FromResult((Components.Core.Model.Church)null));
 
                 //ACT
-                var response = Server.HttpClient.PutAsJsonAsync("/api/church/{0}".FormatWith(churchId), churchViewModel).Result;
+                var httpClient = GetHttpClientWithAuthentication();
+                var response = httpClient.PutAsJsonAsync("/api/church/{0}".FormatWith(churchId), churchViewModel).Result;
 
                 //Assert
                 Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode, "Expected 404 for church that doesnt exist.");
@@ -415,7 +414,8 @@ namespace Church.IntegrationTests
                                  
 
                 //ACT
-                var response = Server.HttpClient.PutAsJsonAsync("/api/church/{0}".FormatWith(churchId), churchViewModel).Result;
+                var httpClient = GetHttpClientWithAuthentication();
+                var response = httpClient.PutAsJsonAsync("/api/church/{0}".FormatWith(churchId), churchViewModel).Result;
 
                 //Assert
                 Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode, "Expected bad request for duplicate church name.");
@@ -459,7 +459,8 @@ namespace Church.IntegrationTests
                                  }));
 
                 //ACT
-                var response = Server.HttpClient.PutAsJsonAsync("/api/church/{0}".FormatWith(churchId), churchViewModel).Result;
+                var httpClient = GetHttpClientWithAuthentication();
+                var response = httpClient.PutAsJsonAsync("/api/church/{0}".FormatWith(churchId), churchViewModel).Result;
 
                 //Assert
                 Assert.AreEqual(HttpStatusCode.OK, response.StatusCode, "Expected 200 OK for successful update.");
@@ -493,7 +494,8 @@ namespace Church.IntegrationTests
                 mockChurchService.Expect(x => x.UpdateAsync(Arg<Components.Core.Model.Church>.Is.Anything));
 
                 //Act
-                var response = Server.HttpClient.PutAsJsonAsync("/api/church/{0}".FormatWith(churchId), churchViewModel).Result;
+                var httpClient = GetHttpClientWithAuthentication();
+                var response = httpClient.PutAsJsonAsync("/api/church/{0}".FormatWith(churchId), churchViewModel).Result;
 
                 //Assert
                 mockChurchService.AssertWasCalled(x => x.UpdateAsync(Arg<Components.Core.Model.Church>.Matches(z => z.Id == churchId)));
@@ -516,7 +518,8 @@ namespace Church.IntegrationTests
                 mockChurchService.Expect(x => x.GetByIdAsync(churchId)).Return(Task.FromResult((Components.Core.Model.Church)null));
 
                 //ACT
-                var response = Server.HttpClient.DeleteAsync("/api/church/{0}".FormatWith(churchId)).Result;
+                var httpClient = GetHttpClientWithAuthentication();
+                var response = httpClient.DeleteAsync("/api/church/{0}".FormatWith(churchId)).Result;
 
                 //Assert
                 Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode, "Expected 404 for deleting a church that doesnt exist.");
@@ -557,7 +560,8 @@ namespace Church.IntegrationTests
 
 
                 //ACT
-                var response = Server.HttpClient.DeleteAsync("/api/church/{0}".FormatWith(churchId)).Result;
+                var httpClient = GetHttpClientWithAuthentication();
+                var response = httpClient.DeleteAsync("/api/church/{0}".FormatWith(churchId)).Result;
 
                 //Assert
                 Assert.AreEqual(HttpStatusCode.OK, response.StatusCode, "Expected 200 OK for successful archive");

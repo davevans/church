@@ -47,8 +47,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AuthenticationService.cs" />
     <Compile Include="ChurchService.cs" />
     <Compile Include="CoreSettings.cs" />
+    <Compile Include="IAuthenticationService.cs" />
     <Compile Include="IChurchService.cs" />
     <Compile Include="IPersonService.cs" />
     <Compile Include="Model\Address.cs" />

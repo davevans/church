@@ -19,22 +19,18 @@ namespace Church.Host.Owin.Core
     public class Startup
     {
         public static  HttpConfiguration HttpConfiguration;
-        private static Container _container;
+        public static Container Container;
 
         public void Configuration(IAppBuilder appBuilder)
         {
             var container = new Container();
 
             HttpConfiguration = new HttpConfiguration();
-            
-
             MappingConfiguration.Configure();
             HttpConfiguration.MapHttpAttributeRoutes();
 
             SetContainer(container);
 
-
-            //Auth
             appBuilder.UseOAuthAuthorizationServer(new OAuthAuthorizationServerOptions
             {
                 AllowInsecureHttp = true,
@@ -47,30 +43,36 @@ namespace Church.Host.Owin.Core
             appBuilder.UseWebApi(HttpConfiguration);
 
             //start IServices
-            var services = _container.GetAllInstances<IService>();
+            var services = Container.GetAllInstances<IService>();
             services.ForEach(s => s.Start());
         }
 
+        /// <summary>
+        /// SetContainer allows us to override the IoC container for unit and integration testing
+        /// </summary>
+        /// <param name="container"></param>
         public static void SetContainer(Container container)
         {
-            _container = container;
+            Container = container;
             HttpConfiguration.SetDependencyResolver(container);
             RegisterComponents();
         }
 
         static void RegisterComponents()
         {
-            _container.RegisterSingle<ISettingsProvider, AppSettingsProvider>();
-            _container.RegisterSingle<ILogger, Log4NetLogger>();
-            _container.RegisterSingle<IChurchRepository, ChurchRepository>();
-            _container.RegisterSingle<IPersonRepository, PersonRepository>();
+            Container.RegisterSingle<IAuthenticationService, AuthenticationService>();
+            Container.RegisterSingle<OAuthAuthorizationServerProvider, ChurchOAuthAuthorizationServerProvider>();
+            Container.RegisterSingle<ISettingsProvider, AppSettingsProvider>();
+            Container.RegisterSingle<ILogger, Log4NetLogger>();
+            Container.RegisterSingle<IChurchRepository, ChurchRepository>();
+            Container.RegisterSingle<IPersonRepository, PersonRepository>();
 
             //register IServices
-            _container.RegisterSingle<IChurchService, ChurchService>();
-            _container.RegisterSingle<IPersonService, PersonService>();
+            Container.RegisterSingle<IChurchService, ChurchService>();
+            Container.RegisterSingle<IPersonService, PersonService>();
 
             //register as IService
-            _container.RegisterAll<IService>(new[]
+            Container.RegisterAll<IService>(new[]
             {
                 typeof(ChurchService),
                 typeof(PersonService)

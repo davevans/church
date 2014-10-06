@@ -1,5 +1,6 @@
 ﻿using System.Security.Claims;
 using System.Threading.Tasks;
+using Church.Components.Core;
 using Microsoft.Owin.Security.OAuth;
 
 namespace Church.Host.Owin.Core.Authentication
@@ -14,8 +15,9 @@ namespace Church.Host.Owin.Core.Authentication
 
         public override async Task GrantResourceOwnerCredentials(OAuthGrantResourceOwnerCredentialsContext context)
         {
-
-            if (context.UserName != context.Password)
+            var authService = Startup.Container.GetInstance<IAuthenticationService>();
+            var authenticated = authService.Authenticate(context.UserName, context.Password);
+            if (!authenticated)
             {
                 context.Rejected();
                 return;
