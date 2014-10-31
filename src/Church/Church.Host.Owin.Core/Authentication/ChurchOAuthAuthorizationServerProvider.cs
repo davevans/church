@@ -1,6 +1,6 @@
 ﻿using System.Security.Claims;
 using System.Threading.Tasks;
-using Church.Components.Core;
+using Church.Components.Account;
 using Microsoft.Owin.Security.OAuth;
 
 namespace Church.Host.Owin.Core.Authentication

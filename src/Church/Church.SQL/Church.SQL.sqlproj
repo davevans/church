@@ -67,6 +67,8 @@
     <Folder Include="Schemas\Core\Stored Procedures" />
     <Folder Include="Schemas\dbo" />
     <Folder Include="Schemas\dbo\User Defined Table Types" />
+    <Folder Include="Schemas\Account" />
+    <Folder Include="Schemas\Account\Tables" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Security\ChurchUserLogin.sql" />
@@ -89,6 +91,8 @@
     <Build Include="Schemas\Core\Tables\Person.sql" />
     <Build Include="Schemas\Core\Stored Procedures\PersonGet.sql" />
     <Build Include="Schemas\Core\Stored Procedures\PersonGetByChurchId.sql" />
+    <Build Include="Security\Schemas\Account.sql" />
+    <Build Include="Schemas\Account\Tables\User.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Church.SQL.Local.publish.xml" />

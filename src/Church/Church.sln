@@ -21,6 +21,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{A376A92E-A
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Church.ConsoleApp", "Church.ConsoleApp\Church.ConsoleApp.csproj", "{678CD616-5FCD-4484-B8D1-60C187085B9C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Church.Components.Account", "Church.Components.Account\Church.Components.Account.csproj", "{F5097346-78B3-4D61-ABBA-B0DD10314DC4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -59,6 +61,10 @@ Global
 		{678CD616-5FCD-4484-B8D1-60C187085B9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{678CD616-5FCD-4484-B8D1-60C187085B9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{678CD616-5FCD-4484-B8D1-60C187085B9C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F5097346-78B3-4D61-ABBA-B0DD10314DC4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F5097346-78B3-4D61-ABBA-B0DD10314DC4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F5097346-78B3-4D61-ABBA-B0DD10314DC4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F5097346-78B3-4D61-ABBA-B0DD10314DC4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

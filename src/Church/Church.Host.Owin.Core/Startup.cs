@@ -4,6 +4,7 @@ using Church.Common.Extensions;
 using Church.Common.Logging;
 using Church.Common.Service;
 using Church.Common.Settings;
+using Church.Components.Account;
 using Church.Components.Core;
 using Church.Components.Core.Repository;
 using Church.Host.Owin.Core.Authentication;

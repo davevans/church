@@ -136,6 +136,10 @@
       <Project>{5ed93ccb-eff1-4d29-be10-433a8431cc27}</Project>
       <Name>Church.Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Church.Components.Account\Church.Components.Account.csproj">
+      <Project>{f5097346-78b3-4d61-abba-b0dd10314dc4}</Project>
+      <Name>Church.Components.Account</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Church.Components.Core\Church.Components.Core.csproj">
       <Project>{dc8504ad-f791-4c54-83ca-7727cc1d7e2a}</Project>
       <Name>Church.Components.Core</Name>
