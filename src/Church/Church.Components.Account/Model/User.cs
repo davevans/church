@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Church.Components.Account
+namespace Church.Components.Account.Model
 {
     public class User
     {
