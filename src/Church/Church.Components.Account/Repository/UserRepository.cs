@@ -26,12 +26,23 @@ namespace Church.Components.Account.Repository
             _sqlDatabase = new SqlDatabase(settings.Database);
         }
 
-        public async Task<IEnumerable<User>> GetAllActiveUsersAsync()
+        public async Task<Result<IEnumerable<User>>> GetAllActiveUsersAsync()
         {
-            var command = _sqlDatabase.GetStoredProcCommand("Account.UserGetAllActive");
-            using (var reader = await _sqlDatabase.ExecuteReaderAsync(command))
+            try
             {
-                return UserFromReader(reader);
+                IEnumerable<User> users;
+                var command = _sqlDatabase.GetStoredProcCommand("Account.UserGetAllActive");
+                using (var reader = await _sqlDatabase.ExecuteReaderAsync(command))
+                {
+                    users = UserFromReader(reader);
+                }
+                return Result<IEnumerable<User>>.Success(users);
+            }
+            catch (SqlException sex)
+            {
+                var error = ChurchErrors.UnknownError;
+                _logger.Exception(GetType(), "Failed to get all active users:", sex);
+                return Result<IEnumerable<User>>.Failure(error);
             }
         }
 

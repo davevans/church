@@ -47,4 +47,8 @@ GO
 
 GRANT EXECUTE ON [Account].UserInsert TO [ChurchUser] As [dbo];
 GO
+GRANT EXECUTE ON [Account].UserGetAllActive TO [ChurchUser] As [dbo];
+GO
+GRANT EXECUTE ON [Account].UserGet TO [ChurchUser] As [dbo];
+GO
 

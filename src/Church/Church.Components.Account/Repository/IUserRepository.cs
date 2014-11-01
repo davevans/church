@@ -7,7 +7,7 @@ namespace Church.Components.Account.Repository
 {
     public interface IUserRepository
     {
-        Task<IEnumerable<User>> GetAllActiveUsersAsync();
-        Task<Result<Model.User>> AddUserAsync(User userToAdd);
+        Task<Result<IEnumerable<User>>> GetAllActiveUsersAsync();
+        Task<Result<User>> AddUserAsync(User userToAdd);
     }
 }
