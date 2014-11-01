@@ -119,11 +119,14 @@
   <ItemGroup>
     <Compile Include="Authentication\ChurchOAuthAuthorizationServerProvider.cs" />
     <Compile Include="Controllers\ChurchController.cs" />
+    <Compile Include="Controllers\UserController.cs" />
+    <Compile Include="ViewModels\AddUserRequestViewModel.cs" />
     <Compile Include="HttpConfiguration.cs" />
     <Compile Include="MappingConfiguration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="ViewModels\AddressViewModel.cs" />
+    <Compile Include="ViewModels\AddUserResponseViewModel.cs" />
     <Compile Include="ViewModels\Errors\BadRequestViewModel.cs" />
     <Compile Include="ViewModels\ChurchViewModel.cs" />
     <Compile Include="ViewModels\Errors\NotFoundViewModel.cs" />

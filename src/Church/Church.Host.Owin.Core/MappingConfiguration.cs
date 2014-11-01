@@ -1,4 +1,5 @@
 ﻿using Church.Common.Mapping;
+using Church.Components.Account.Model;
 using Church.Components.Core.Model;
 using Church.Host.Owin.Core.ViewModels;
 
@@ -46,6 +47,10 @@ namespace Church.Host.Owin.Core
                 .ForMember(x => x.TimeZone, o => o.MapFrom(x => x.TimeZone))
                 .ForMember(x => x.Gender, o => o.MapFrom(x => x.Gender));
 
+
+            Mapper.CreateMap<User, AddUserResponseViewModel>()
+                .ForMember(x => x.Id, o => o.MapFrom(d => d.Id))
+                .ForMember(x => x.PersonId, o => o.MapFrom(d => d.PersonId));
 
         }
     }

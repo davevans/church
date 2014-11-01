@@ -5,6 +5,7 @@ using Church.Common.Logging;
 using Church.Common.Service;
 using Church.Common.Settings;
 using Church.Components.Account;
+using Church.Components.Account.Repository;
 using Church.Components.Core;
 using Church.Components.Core.Repository;
 using Church.Host.Owin.Core.Authentication;
@@ -67,16 +68,19 @@ namespace Church.Host.Owin.Core
             Container.RegisterSingle<ILogger, Log4NetLogger>();
             Container.RegisterSingle<IChurchRepository, ChurchRepository>();
             Container.RegisterSingle<IPersonRepository, PersonRepository>();
+            Container.RegisterSingle<IUserRepository, UserRepository>();
 
             //register IServices
             Container.RegisterSingle<IChurchService, ChurchService>();
             Container.RegisterSingle<IPersonService, PersonService>();
+            Container.RegisterSingle<IUserService, UserService>();
 
             //register as IService
             Container.RegisterAll<IService>(new[]
             {
                 typeof(ChurchService),
-                typeof(PersonService)
+                typeof(PersonService),
+                typeof(UserService)
             });
 
         }

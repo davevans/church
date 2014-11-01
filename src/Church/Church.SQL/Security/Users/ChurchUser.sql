@@ -15,6 +15,15 @@ GO
 GRANT DELETE ON SCHEMA :: Core To [ChurchUser]
 GO
 
+GRANT SELECT ON SCHEMA :: Account To [ChurchUser]
+GO
+GRANT INSERT ON SCHEMA :: Account To [ChurchUser]
+GO
+GRANT UPDATE ON SCHEMA :: Account To [ChurchUser]
+GO
+GRANT DELETE ON SCHEMA :: Account To [ChurchUser]
+GO
+
 
 
 /*
@@ -34,5 +43,8 @@ GO
 GRANT EXECUTE ON [Core].PersonGet TO [ChurchUser] As [dbo];
 GO
 GRANT EXECUTE ON [Core].[PersonGetByChurchId] TO [ChurchUser] As [dbo];
+GO
+
+GRANT EXECUTE ON [Account].UserInsert TO [ChurchUser] As [dbo];
 GO
 

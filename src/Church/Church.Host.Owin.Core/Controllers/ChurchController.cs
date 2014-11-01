@@ -51,12 +51,7 @@ namespace Church.Host.Owin.Core.Controllers
             {
                 if (!ModelState.IsValid)
                 {
-                    return Request.CreateResponse(HttpStatusCode.BadRequest, new BadRequestViewModel
-                    {
-                        Errors = ModelState.Values.SelectMany(e => e.Errors)
-                                                  .Select(x => x.ErrorMessage)
-                                                  .ToList()
-                    });
+                    return Request.CreateResponse(HttpStatusCode.BadRequest, new BadRequestViewModel(ModelState));
                 }
 
                 var church = Mapper.Map<ChurchViewModel, Components.Core.Model.Church>(churchViewModel);

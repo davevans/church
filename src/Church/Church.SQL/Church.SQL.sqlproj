@@ -96,11 +96,13 @@
     <Build Include="Schemas\Account\Tables\User.sql" />
     <Build Include="Schemas\Account\Stored Procedures\UserGet.sql" />
     <Build Include="Schemas\Account\Stored Procedures\UserGetAllActive.sql" />
+    <Build Include="Schemas\Account\Stored Procedures\UserInsert.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Church.SQL.Local.publish.xml" />
     <None Include="_PostDeployment\Core.Church.Populate.sql" />
     <None Include="_PostDeployment\Core.Person.Populate.sql" />
+    <None Include="_PostDeployment\Account.User.Populate.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Script.PostDeployment.sql" />

@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
+using Newtonsoft.Json;
 using Thinktecture.IdentityModel.Client;
 
 namespace Church.ConsoleApp
@@ -12,8 +9,9 @@ namespace Church.ConsoleApp
     {
         static void Main(string[] args)
         {
+            
             const string tokenUrl = @"http://localhost:12345/token";
-            const string resourceUrl = @"http://localhost:12345/api/church/1";
+            //const string resourceUrl = @"http://localhost:12345/api/church/1";
 
             var client = new OAuth2Client(new Uri(tokenUrl));
             var tokenResponse = client.RequestResourceOwnerPasswordAsync("dav", "dav").Result;
@@ -22,11 +20,34 @@ namespace Church.ConsoleApp
 
             var httpClient = new HttpClient();
             httpClient.SetBearerToken(tokenResponse.AccessToken);
-            var json = httpClient.GetStringAsync(resourceUrl).Result;
 
-            Console.WriteLine("Result {0}.", json);
+            var newUser = new AddUserRequestViewModel
+            {
+                PersonId = 1,
+                Password = "Tristessa1"
+            };
 
+
+            var jsonResponse = httpClient.PostAsJsonAsync(@"http://localhost:12345/api/user", newUser).Result;
+
+            var response = JsonConvert.DeserializeObject<AddUserResponseViewModel>(jsonResponse.Content.ReadAsStringAsync().Result);
+            Console.WriteLine("Added personId:{0}, userId:{1}, created:{2}.", response.PersonId, response.Id, response.Created);
+
+            
             Console.ReadLine();
         }
+    }
+
+    public class AddUserRequestViewModel
+    {
+        public long PersonId { get; set; }
+        public string Password { get; set; }
+    }
+
+    public class AddUserResponseViewModel
+    {
+        public long Id { get; set; }
+        public long PersonId { get; set; }
+        public DateTime Created { get; set; }
     }
 }
