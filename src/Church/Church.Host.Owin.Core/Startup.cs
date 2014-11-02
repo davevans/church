@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Web.Http;
+using Church.Common.Cache;
 using Church.Common.Extensions;
 using Church.Common.Logging;
 using Church.Common.Service;
@@ -69,6 +70,7 @@ namespace Church.Host.Owin.Core
             Container.RegisterSingle<IChurchRepository, ChurchRepository>();
             Container.RegisterSingle<IPersonRepository, PersonRepository>();
             Container.RegisterSingle<IUserRepository, UserRepository>();
+            Container.RegisterSingle<ICache, RedisCache>();
 
             //register IServices
             Container.RegisterSingle<IChurchService, ChurchService>();
